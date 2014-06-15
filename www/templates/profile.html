@@ -1,0 +1,22 @@
+<ion-view title="Profile">
+    <ion-nav-buttons side="right">
+        <button class="button">Log Out</button>
+    </ion-nav-buttons>
+    <ion-content>
+        <img src="{{profile.profilePic}}" alt="" height="150" width="150" class="profile-pic">
+        <ul class="list">
+            <li class="item">
+                <span class="list-item-label">Name</span>
+                <span>{{profile.name}}</span>
+            </li>
+            <li class="item">
+                <span class="list-item-label">Email</span>
+                <span>{{profile.email}}</span>
+            </li>
+            <li class="item">
+                <span class="list-item-label">Class</span>
+                <span>{{profile.collegeClass}}</span>
+            </li>
+        </ul>
+    </ion-content>
+</ion-view>

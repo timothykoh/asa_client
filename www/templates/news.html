@@ -1,0 +1,15 @@
+<ion-view title="News">
+    <ion-content>
+        <div class="list card" ng-repeat="news in newsList">
+            <div class="item item-avatar">
+                <img src="{{news.thumbnail}}" alt="">
+                <h2>{{news.title}}</h2>
+                <p>{{news.date}}</p>
+            </div>
+            <div class="item item-body">
+                <img src="{{news.img}}" alt="" class="full-image">
+                <p>{{news.details}}</p>
+            </div>
+        </div>
+    </ion-content>
+</ion-view>

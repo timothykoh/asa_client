@@ -1,0 +1,14 @@
+/* Empty. Add your own CSS if you like */
+.profile-pic{
+    margin: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    display: block;
+    border-radius: 50%/50%;
+}
+
+.list-item-label{
+    width: 80px;
+    font-weight: bold;
+    display: inline-block;
+}
