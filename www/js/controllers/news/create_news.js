@@ -1,6 +1,6 @@
 app.controller("CreateNewsCtrl",
-    ["$scope", "NewsService", "ImageService", "$ionicPopup", "$state",
-    function($scope, NewsService, ImageService, $ionicPopup, $state){
+    ["$scope", "NewsService", "ImageService", "$ionicPopup", "$state", "$ionicLoading",
+    function($scope, NewsService, ImageService, $ionicPopup, $state, $ionicLoading){
         $scope.newsForm = {
             title: "",
             description: ""
@@ -27,11 +27,14 @@ app.controller("CreateNewsCtrl",
                 });
                 return;
             }
-
+            $ionicLoading.show({
+                template: "<span>Uploading Image</span>"
+            });
             // valid input
             NewsService.createNews($scope.newsForm, $scope.imgData)
             .then(function(){
                 console.log("Successfully created news");
+                $ionicLoading.hide();
                 $ionicPopup.show({
                     title: "News created",
                     buttons: [
@@ -60,17 +63,23 @@ app.controller("CreateNewsCtrl",
         var imageInputElem = document.getElementById("image-input");
         imageInputElem.addEventListener("change", handleFiles, false);
         function handleFiles(){
+            $ionicLoading.show({
+                template: "<span>Loading Image</span>"
+            });
             var file = this.files[0];
-            var reader = new FileReader();
-            reader.onload = function(e){
-                $scope.$apply(function(){
-                    $scope.displayImgSrc = e.target.result;
-                });
+            setTimeout(function(){
+                var reader = new FileReader();
                 reader.onload = function(e){
-                    $scope.imgData = e.target.result;
-                }
-                reader.readAsBinaryString(file);
-            };
-            reader.readAsDataURL(file);
+                    $scope.$apply(function(){
+                        $scope.displayImgSrc = e.target.result;
+                        $ionicLoading.hide();
+                    });
+                    reader.onload = function(e){
+                        $scope.imgData = e.target.result;
+                    }
+                    reader.readAsBinaryString(file);
+                };
+                reader.readAsDataURL(file);
+            }, 0);
         };
 }]);

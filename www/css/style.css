@@ -101,3 +101,6 @@ input[type=date].pseudo-placeholder:hover::before{
         font-size: 19px;
         line-height: 10px;
     }
+.loading-icon{
+    font-size: 40px;
+}

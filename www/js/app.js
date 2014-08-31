@@ -4,7 +4,9 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 var app = angular.module('starter', ['ionic']);
-
+app.constant("$ionicLoadingConfig",{
+    template: "<i class='loading-icon ion-loading-a'></i>"
+});
 app.config(["$stateProvider", "$urlRouterProvider", "$httpProvider", function($stateProvider, $urlRouterProvider, $httpProvider){
     $stateProvider
     .state("news", {
@@ -66,10 +68,12 @@ app.config(["$stateProvider", "$urlRouterProvider", "$httpProvider", function($s
   $httpProvider.defaults.withCredentials = true;
 }]);
 
+
+
 app.run(["$rootScope","$ionicPlatform",function($rootScope, $ionicPlatform) {
-    $rootScope.serverBaseUrl = "http://23.92.65.89:3000/";
+    // $rootScope.serverBaseUrl = "http://23.92.65.89:3000/";
     // $rootScope.serverBaseUrl = "http://asa.timothykoh.com:3000/";
-    // $rootScope.serverBaseUrl = "http://localhost:3000/";
+    $rootScope.serverBaseUrl = "http://localhost:3000/";
     // $rootScope.serverBaseUrl = "http://192.168.1.132:3000/";
     // $rootScope.serverBaseUrl = "http://128.237.205.212:3000/";
 

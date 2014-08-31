@@ -1,6 +1,6 @@
 app.controller("CreateEventCtrl", 
-    ["$scope", "EventService", "$ionicPopup", "$timeout", "$state", 
-    function($scope, EventService, $ionicPopup, $timeout, $state){
+    ["$scope", "EventService", "$ionicPopup", "$timeout", "$state", "$ionicLoading",
+    function($scope, EventService, $ionicPopup, $timeout, $state, $ionicLoading){
         $scope.eventForm = {
             name: "",
             description: "",
@@ -69,47 +69,58 @@ app.controller("CreateEventCtrl",
                 });
                 return;
             }
-            EventService.createEvent($scope.eventForm, $scope.imgData, $scope.tasks)
-            .then(function(){
-                $ionicPopup.show({
-                    title: "Event created",
-                    buttons: [
-                        {
-                            text: "Okay",
-                            onTap: function(){
-                                $state.go("event-list");
-                            }
-                        }
-                    ]
-                });
-            }, function(){
-                $ionicPopup.show({
-                    title: "<span class='red-text'>Failed to create event.</span>",
-                    buttons: [
-                        {
-                            text: "Okay"
-                        }
-                    ]
-                });
+            $ionicLoading.show({
+                template: "<span>Uploading Image</span>"
             });
+            setTimeout(function(){
+                EventService.createEvent($scope.eventForm, $scope.imgData, $scope.tasks)
+                .then(function(){
+                    $ionicLoading.hide();
+                    $ionicPopup.show({
+                        title: "Event created",
+                        buttons: [
+                            {
+                                text: "Okay",
+                                onTap: function(){
+                                    $state.go("event-list");
+                                }
+                            }
+                        ]
+                    });
+                }, function(){
+                    $ionicPopup.show({
+                        title: "<span class='red-text'>Failed to create event.</span>",
+                        buttons: [
+                            {
+                                text: "Okay"
+                            }
+                        ]
+                    });
+                });
+            }, 0);
         };
         // handle image upload
         var imageInputElem = document.getElementById("image-input");
         imageInputElem.addEventListener("change", handleFiles, false);
         function handleFiles(){
+            $ionicLoading.show({
+                template: "<span>Loading Image</span>"
+            });
             var file = this.files[0];
-            var reader = new FileReader();
-            reader.onload = function(e){
-                $scope.$apply(function(){
-                    $scope.displayImgSrc = e.target.result;
-                });
+            setTimeout(function(){
+                var reader = new FileReader();
                 reader.onload = function(e){
-                    $scope.imgData = e.target.result;
-                }
-                reader.readAsBinaryString(file);
-            };
-            reader.readAsDataURL(file);
-
+                    $scope.$apply(function(){
+                        $scope.displayImgSrc = e.target.result;
+                        $ionicLoading.hide();
+                    });
+                    reader.onload = function(e){
+                        $scope.imgData = e.target.result;
+                    }
+                    reader.readAsBinaryString(file);
+                };
+                reader.readAsDataURL(file);
+            }, 0);
         };
     }]
 );
