@@ -58,14 +58,31 @@ app.controller("CreateEventCtrl",
         };
 
         $scope.create = function(e){
-            if ($scope.eventForm.name === ""){
+            console.log($scope.eventForm.budget);
+            if ($scope.eventForm.name === "" ||
+                $scope.eventForm.description === "" ||
+                $scope.eventForm.date === "" ||
+                $scope.eventForm.location === "" ||
+                $scope.eventForm.budget === "" ||
+                $scope.imgData === undefined){
                 $ionicPopup.show({
-                    title: "Please fill in the <span class='red-text'>Event Name</span>.",
+                    title: "<span class='red-text'>All fields are required.</span>",
                     buttons: [
                         {
                             text: "Okay"
                         }
                     ]
+                });
+                return;
+            }
+            if (isNaN($scope.eventForm.budget)){
+                $ionicPopup.show({
+                   title: "<span class='red-text'>Budget has to be numeric.</span>",
+                    buttons: [
+                        {
+                            text: "Okay"
+                        }
+                    ] 
                 });
                 return;
             }
@@ -103,6 +120,9 @@ app.controller("CreateEventCtrl",
         var imageInputElem = document.getElementById("image-input");
         imageInputElem.addEventListener("change", handleFiles, false);
         function handleFiles(){
+            if (this.files.length === 0){
+                return;
+            }
             $ionicLoading.show({
                 template: "<span>Loading Image</span>"
             });

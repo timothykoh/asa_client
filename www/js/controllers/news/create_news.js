@@ -15,10 +15,11 @@ app.controller("CreateNewsCtrl",
 
         $scope.create = function(){
             console.log("CREATING");
-            if ($scope.newsForm.title === "" || $scope.newsForm.description === ""){
+            if ($scope.newsForm.title === "" ||
+                $scope.newsForm.description === "" ||
+                $scope.imgData === undefined){
                 $ionicPopup.show({
-                    title: "Please fill in the <span class='red-text'>Title</span> " +
-                            "and the <span class='red-text'>Description</span>",
+                    title: "<span class='red-text'>All fields are required.</span>",
                     buttons: [
                         {
                             text: "Okay"
@@ -63,6 +64,9 @@ app.controller("CreateNewsCtrl",
         var imageInputElem = document.getElementById("image-input");
         imageInputElem.addEventListener("change", handleFiles, false);
         function handleFiles(){
+            if (this.files.length === 0){
+                return;
+            }
             $ionicLoading.show({
                 template: "<span>Loading Image</span>"
             });
