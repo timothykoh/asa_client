@@ -1,0 +1,37 @@
+<ion-view title="News">
+    <ion-nav-buttons side="right">
+        <a ng-if="isLoggedIn === true" class="button" href="#/create-news">Create</a>
+    </ion-nav-buttons>
+    <ion-content>
+        <div class="list card" ng-repeat="news in newsList">
+            <div class="item item-avatar">
+                <img ng-src="http://graph.facebook.com/{{news.creator_fb_id}}/picture?height=40&width=40" alt="" class="news-thumbnail">
+                <h2>{{news.title}}</h2>
+                <p>{{news.date_created}}</p>
+            </div>
+            <div class="item item-body">
+                <img src="{{news.img_src}}" alt="" class="full-image">
+                <p>{{news.description}}</p>
+                <!-- <p>
+                    <a href="#" class="subdued">1 Like</a>
+                    <a href="#" class="subdued">5 Comments</a>
+                </p> -->
+            </div>
+            <!-- <div class="item tabs tabs-secondary tabs-icon-left">
+            <a class="tab-item" href="#">
+                <i class="icon ion-thumbsup"></i>
+                Like
+            </a>
+            <a class="tab-item" href="#">
+                <i class="icon ion-chatbox"></i>
+                Comment
+            </a>
+            <a class="tab-item" href="#">
+                <i class="icon ion-share"></i>
+                Share
+            </a> -->
+          </div>
+        </div>
+        <br>
+    </ion-content>
+</ion-view>

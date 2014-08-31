@@ -1,0 +1,45 @@
+<ion-view title="Create Event">
+    <ion-nav-buttons side="left">
+        <a class="button button-clear icon-left ion-ios7-arrow-left" href="#/event-list"></a>
+    </ion-nav-buttons>
+    <ion-nav-buttons side="right">
+        <a class="button" ng-click="create()">Done</a>
+    </ion-nav-buttons>
+    <ion-content>
+        <div class="list">
+            <label class="item item-input">
+                <input type="text" ng-model="eventForm.name" placeholder="Event Name">
+            </label
+            <label class="item item-input">
+                <textarea rows="4" ng-model="eventForm.description" placeholder="Description"></textarea>
+            </label>
+            <label class="item item-input">
+                <input class="pseudo-placeholder" onclick="this.classList.remove('pseudo-placeholder')" type="date" ng-model="eventForm.date" placeholder="Date">
+            </label>
+            <label class="item item-input">
+                <input type="text" ng-model="eventForm.location" placeholder="Location">
+            </label>
+            <label class="item item-input">
+                <input type="number" min="0" ng-model="eventForm.budget" placeholder="Budget">
+            </label>
+            <label class="item item-input">
+                <span class="hover-placeholder">Image</span>
+                <input class="invis" id="image-input" type="file" accept="image/*" capture="camera">
+            </label>
+            <label ng-if="displayImgSrc !== undefined" class="item item-image">
+                <img id="image-preview" src="{{displayImgSrc}}">
+            </label>
+            <div class="item item-divider bar">
+                <span class="title">Tasks</span>
+                <button class="button" ng-click="showTaskPopup()">Add Task</button>
+            </div>
+            <ion-list can-swipe="true">
+                <ion-item ng-repeat="task in tasks">
+                    <span>{{task.name}}</span>
+                    <span style="float:right; color: #b0b0b0;">{{task.numPeople}}</span>
+                     <ion-option-button class="button-assertive" ng-click="deleteTask($index)">Delete</ion-option-button>
+                </ion-item>
+            </ion-list>
+        </div>
+    </ion-content>
+</ion-view>

@@ -1,0 +1,25 @@
+<ion-view title="Create News">
+    <ion-nav-buttons side="left">
+        <a class="button button-clear icon-left ion-ios7-arrow-left" href="#/news"></a>
+    </ion-nav-buttons>
+    <ion-nav-buttons side="right">
+        <a class="button" ng-click="create()">Done</a>
+    </ion-nav-buttons>
+    <ion-content>
+        <div class="list">
+            <label class="item item-input">
+                <input type="text" ng-model="newsForm.title" placeholder="Title">
+            </label>
+            <label class="item item-input">
+                <textarea ng-model="newsForm.description" rows="5" placeholder="Description"></textarea>
+            </label>
+            <label class="item item-input">
+                <span class="hover-placeholder">Image</span>
+                <input class="invis" id="image-input" type="file" accept="image/*" capture="camera">
+            </label>
+            <label ng-if="displayImgSrc !== undefined" class="item item-image">
+                <img id="image-preview" src="{{displayImgSrc}}">
+            </label>
+        </div>
+    </ion-content>
+</ion-view>

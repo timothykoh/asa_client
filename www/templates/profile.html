@@ -1,21 +1,37 @@
 <ion-view title="Profile">
     <ion-nav-buttons side="right">
-        <button class="button">Log Out</button>
+        <button ng-if="isLoggedIn !== true" ng-click="login()" class="button">Login</button>
+        <button ng-if="isLoggedIn === true" ng-click="logout()" class="button">Logout</button>
     </ion-nav-buttons>
     <ion-content>
-        <img src="{{profile.profilePic}}" alt="" height="150" width="150" class="profile-pic">
-        <ul class="list">
+        <!-- content if logged in -->
+        <img ng-if="isLoggedIn === true" ng-src="http://graph.facebook.com/{{user.fb_id}}/picture?height=150&width=150" alt="" height="150" width="150" class="profile-pic">
+        <ul ng-if="isLoggedIn === true" class="list">
             <li class="item">
                 <span class="list-item-label">Name</span>
-                <span>{{profile.name}}</span>
+                <span>{{user.name}}</span>
             </li>
             <li class="item">
                 <span class="list-item-label">Email</span>
-                <span>{{profile.email}}</span>
+                <span>{{user.email}}</span>
             </li>
             <li class="item">
+                <span class="list-item-label">User Type</span>
+                <span ng-if="isAdmin === true">Admin</span>
+                <span ng-if="isAdmin !== true">General</span>
+            </li>
+            <!-- <li class="item">
                 <span class="list-item-label">Class</span>
                 <span>{{profile.collegeClass}}</span>
+            </li> -->
+        </ul>
+
+        <!-- content if not logged in -->
+        <img ng-if="isLoggedIn !== true" src="img/fb_default_pic.jpg" alt="" height="150" width="150" class="profile-pic">
+        <ul ng-if="isLoggedIn !== true" class="list">
+            <li class="item">
+                <span class="list-item-label">Name</span>
+                <span>Guest</span>
             </li>
         </ul>
     </ion-content>

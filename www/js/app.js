@@ -5,32 +5,50 @@
 // the 2nd parameter is an array of 'requires'
 var app = angular.module('starter', ['ionic']);
 
-app.config(function($stateProvider, $urlRouterProvider){
+app.config(["$stateProvider", "$urlRouterProvider", "$httpProvider", function($stateProvider, $urlRouterProvider, $httpProvider){
     $stateProvider
     .state("news", {
         url: "/news",
         views: {
             "news-tab" : {
-                templateUrl: "templates/news.html",
+                templateUrl: "templates/news/news.html",
                 controller: "NewsCtrl"
             }
         }
     })
-    .state("events", {
-        url: "/events",
+    .state("create-news",{
+        url: "/create-news",
+        views: {
+            "news-tab" : {
+                templateUrl: "templates/news/create-news.html",
+                controller: "CreateNewsCtrl"
+            }
+        }
+    })
+    .state("event-list", {
+        url: "/event-list",
         views: {
            "events-tab" : { 
-                templateUrl: "templates/events.html",
-                controller: "EventsCtrl"
+                templateUrl: "templates/events/event-list.html",
+                controller: "EventListCtrl"
             }
-       },
+       }
     })
-    .state("create-event",{
+    .state("event", {
+        url: "/event",
+        views: {
+            "events-tab": {
+                templateUrl: "templates/events/event.html",
+                controller: "EventCtrl"
+            }
+        }
+    })
+    .state("create-event", {
         url: "/create-event",
         views: {
             "events-tab" : {
-                templateUrl: "templates/create-event.html",
-                controller: "CreateEventsCtrl"
+                templateUrl: "templates/events/create-event.html",
+                controller: "CreateEventCtrl"
             }
         }
     })
@@ -45,17 +63,24 @@ app.config(function($stateProvider, $urlRouterProvider){
     });
 
   $urlRouterProvider.otherwise("news");
-});
+  $httpProvider.defaults.withCredentials = true;
+}]);
 
-app.run(function($ionicPlatform) {
-  $ionicPlatform.ready(function() {
-	// Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
-	// for form inputs)
-	if(window.cordova && window.cordova.plugins.Keyboard) {
-	  cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
-	}
-	if(window.StatusBar) {
-	  StatusBar.styleDefault();
-	}
-  });
-});
+app.run(["$rootScope","$ionicPlatform",function($rootScope, $ionicPlatform) {
+    $rootScope.serverBaseUrl = "http://23.92.65.89:3000/";
+    // $rootScope.serverBaseUrl = "http://asa.timothykoh.com:3000/";
+    // $rootScope.serverBaseUrl = "http://localhost:3000/";
+    // $rootScope.serverBaseUrl = "http://192.168.1.132:3000/";
+    // $rootScope.serverBaseUrl = "http://128.237.205.212:3000/";
+
+    $ionicPlatform.ready(function() {
+        // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
+        // for form inputs)
+        if(window.cordova && window.cordova.plugins.Keyboard) {
+          cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+        }
+        if(window.StatusBar) {
+          StatusBar.styleDefault();
+        }
+    });
+}]);
