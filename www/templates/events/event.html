@@ -39,7 +39,8 @@
         <div ng-if="isAdmin === true" class="card">
             <div class="item item-divider bar">
                 <span class="title">Tasks</span>
-                <button class="button" ng-click="showTaskPopup()">Add Task</button>
+                <a href="#/event/add-task" class="button">Add Task</a>
+                <!-- <button class="button" ng-click="showTaskPopup()">Add Task</button> -->
             </div>
                 <ion-list can-swipe="true">
                 <ion-item ng-repeat="task in tasks">
