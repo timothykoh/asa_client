@@ -71,15 +71,13 @@ app.controller("CreateNewsCtrl",
                 template: "<span>Loading Image</span>"
             });
             var file = this.files[0];
-            setTimeout(function(){
-                ImageService.generateDataUrlFromFile(file, "image/jpeg", 1024, 768)
-                .then(function(dataUrl){
-                    $scope.$apply(function(){
-                        $scope.displayImgSrc = dataUrl;
-                        $scope.imgData = dataUrl;
-                        $ionicLoading.hide();
-                    });
+            ImageService.generateDataUrlFromFile(file, 1280, 720)
+            .then(function(dataUrl){
+                $scope.$apply(function(){
+                    $scope.displayImgSrc = dataUrl;
+                    $scope.imgData = dataUrl;
+                    $ionicLoading.hide();
                 });
-            }, 0);
+            });
         };
 }]);
