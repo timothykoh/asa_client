@@ -71,6 +71,7 @@ app.config(["$stateProvider", "$urlRouterProvider", "$httpProvider", function($s
 
 
 app.run(["$rootScope","$ionicPlatform",function($rootScope, $ionicPlatform) {
+    // $rootScope.serverBaseUrl = "http://app.cmuasa.org:3000/";
     // $rootScope.serverBaseUrl = "http://23.92.65.89:3000/";
     // $rootScope.serverBaseUrl = "http://asa.timothykoh.com:3000/";
     $rootScope.serverBaseUrl = "http://localhost:3000/";

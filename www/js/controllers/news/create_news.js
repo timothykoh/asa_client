@@ -72,18 +72,14 @@ app.controller("CreateNewsCtrl",
             });
             var file = this.files[0];
             setTimeout(function(){
-                var reader = new FileReader();
-                reader.onload = function(e){
+                ImageService.generateDataUrlFromFile(file, "image/jpeg", 1024, 768)
+                .then(function(dataUrl){
                     $scope.$apply(function(){
-                        $scope.displayImgSrc = e.target.result;
+                        $scope.displayImgSrc = dataUrl;
+                        $scope.imgData = dataUrl;
                         $ionicLoading.hide();
                     });
-                    reader.onload = function(e){
-                        $scope.imgData = e.target.result;
-                    }
-                    reader.readAsBinaryString(file);
-                };
-                reader.readAsDataURL(file);
+                });
             }, 0);
         };
 }]);
