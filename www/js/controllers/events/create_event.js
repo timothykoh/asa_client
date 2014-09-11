@@ -1,6 +1,6 @@
 app.controller("CreateEventCtrl", 
-    ["$scope", "EventService", "$ionicPopup", "$timeout", "$state", "$ionicLoading",
-    function($scope, EventService, $ionicPopup, $timeout, $state, $ionicLoading){
+    ["$scope", "EventService", "ImageService", "$ionicPopup", "$timeout", "$state", "$ionicLoading",
+    function($scope, EventService, ImageService, $ionicPopup, $timeout, $state, $ionicLoading){
         $scope.eventForm = {
             name: "",
             description: "",
@@ -127,20 +127,14 @@ app.controller("CreateEventCtrl",
                 template: "<span>Loading Image</span>"
             });
             var file = this.files[0];
-            setTimeout(function(){
-                var reader = new FileReader();
-                reader.onload = function(e){
-                    $scope.$apply(function(){
-                        $scope.displayImgSrc = e.target.result;
-                        $ionicLoading.hide();
-                    });
-                    reader.onload = function(e){
-                        $scope.imgData = e.target.result;
-                    }
-                    reader.readAsBinaryString(file);
-                };
-                reader.readAsDataURL(file);
-            }, 0);
+            ImageService.generateDataUrlFromFile(file, 1280, 720)
+            .then(function(dataUrl){
+                $scope.$apply(function(){
+                    $scope.displayImgSrc = dataUrl;
+                    $scope.imgData = dataUrl;
+                    $ionicLoading.hide();
+                });
+            });
         };
     }]
 );
