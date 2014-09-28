@@ -43,9 +43,9 @@
                 <!-- <button class="button" ng-click="showTaskPopup()">Add Task</button> -->
             </div>
                 <ion-list can-swipe="true">
-                <ion-item ng-repeat="task in tasks">
+                <ion-item ng-click="selectTask($index)" ng-repeat="task in tasks">
                     <span>{{task.name}}</span>
-                    <span style="float:right; color: #b0b0b0;">{{task.num_people}}</span>
+                    <span style="float:right; color: #b0b0b0;">{{task.totalNumAssignees}}/{{task.totalNumPeople}}</span>
                      <ion-option-button class="button-assertive" ng-click="deleteTask($index)">Delete</ion-option-button>
                 </ion-item>
             </ion-list>

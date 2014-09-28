@@ -6,6 +6,30 @@
         <a class="button" ng-click="add()">Add</a>
     </ion-nav-buttons>
     <ion-content>
-        <h1 on-drag-right="swipeRight()">Hello there here is some foooooooooooood</h1>
+        <div class="list">
+            <label class="item item-input">
+                <input type="text" ng-model="taskForm.name" placeholder="Task Name">
+            </label>
+            <label class="item item-input">
+                <input class="pseudo-placeholder" onclick="this.classList.remove('pseudo-placeholder')" type="date" ng-model="taskForm.date" ng-change="dateChange()" placeholder="Date">
+            </label>
+        </div>
+        <div class="task-calendar">
+            <div class="hdr-row">
+                <div class="cell" ng-repeat="date in dateArr">
+                    <span>{{date}}</span>
+                </div>
+            </div>
+            <div ng-if="dateArr" class="hdr-col">
+                <div class="cell" ng-repeat="timeSlot in timeSlots">
+                    <span>{{timeSlot}}:00</span>
+                </div>
+            </div>
+            <div class="col" ng-repeat="date in dateArr">
+                <div ng-click="cellSelected(date, timeSlot)" class="cell" ng-repeat="timeSlot in timeSlots">
+                    <span ng-if="timeSlotMap[date][timeSlot] !== 0" class="cell-val">{{timeSlotMap[date][timeSlot]}}</span>
+                </div>
+            </div>
+        </div>
     </ion-content>
 </ion-view>

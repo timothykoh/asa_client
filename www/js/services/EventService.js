@@ -2,12 +2,11 @@ app.factory("EventService", ["$rootScope", "$http", function($rootScope, $http){
     function EventService(){
         var _currentEventObj = undefined;
 
-        this.createEvent = function(eventDetails, imgData, tasks){
+        this.createEvent = function(eventDetails, imgData){
             return new Promise(function(resolve, reject){
                 $http.post($rootScope.serverBaseUrl + "event/create", {
                     eventDetails: eventDetails,
-                    imgData: imgData,
-                    tasks: tasks
+                    imgData: imgData
                 }).success(function(res){
                     if (res.status === "success"){
                         resolve();

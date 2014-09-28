@@ -1,0 +1,18 @@
+<ion-view title="{{name}}">
+    <ion-nav-buttons side="left">
+        <a class="button button-clear icon-left ion-ios7-arrow-left" href="#/event"></a>
+    </ion-nav-buttons>
+    <ion-content>
+        <ul class="list task-timeslot-list">
+            <li class="item item-divider" ng-repeat-start="dateTaskObj in dateTaskObjArr">{{dateTaskObj.formattedDate}}</li>
+            <li class="item" ng-repeat="timeSlotObj in dateTaskObj.timeSlotObjArr">
+                <span class="time">{{timeSlotObj.timeSlot}}:00</span>
+                <span class="assignee-str">{{timeSlotObj.assigneeStr}}</span>
+                <button ng-if="!timeSlotObj.hasSignedUp" class="button button-small button-balanced list-item-btn" ng-click="timeSlotSignUp(timeSlotObj.timeSlotId, $parent.$parent.$index, $index)">Sign Up</button>
+                <button ng-if="timeSlotObj.hasSignedUp" class="button button-small button-assertive list-item-btn" ng-click="timeSlotCancel(timeSlotObj.timeSlotId, $parent.$parent.$index, $index)">Cancel</button>
+                <span class="people">{{timeSlotObj.numAssignees}}/{{timeSlotObj.numPeople}} people</span>
+            </li>
+            <div ng-repeat-end=""></div>
+        </ul>
+    </ion-content>
+</ion-view>

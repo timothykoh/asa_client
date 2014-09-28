@@ -54,6 +54,15 @@ app.config(["$stateProvider", "$urlRouterProvider", "$httpProvider", function($s
             }
         }
     })
+    .state("event-task", {
+        url: "/event/task",
+        views: {
+            "events-tab": {
+                templateUrl: "templates/events/task.html",
+                controller: "TaskCtrl"
+            }
+        }
+    })
     .state("create-event", {
         url: "/create-event",
         views: {

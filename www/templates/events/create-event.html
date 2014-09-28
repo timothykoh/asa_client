@@ -9,7 +9,7 @@
         <div class="list">
             <label class="item item-input">
                 <input type="text" ng-model="eventForm.name" placeholder="Event Name">
-            </label
+            </label>
             <label class="item item-input">
                 <textarea rows="4" ng-model="eventForm.description" placeholder="Description"></textarea>
             </label>
@@ -29,17 +29,6 @@
             <label ng-if="displayImgSrc !== undefined" class="item item-image">
                 <img id="image-preview" src="{{displayImgSrc}}">
             </label>
-            <div class="item item-divider bar">
-                <span class="title">Tasks</span>
-                <button class="button" ng-click="showTaskPopup()">Add Task</button>
-            </div>
-            <ion-list can-swipe="true">
-                <ion-item ng-repeat="task in tasks">
-                    <span>{{task.name}}</span>
-                    <span style="float:right; color: #b0b0b0;">{{task.numPeople}}</span>
-                     <ion-option-button class="button-assertive" ng-click="deleteTask($index)">Delete</ion-option-button>
-                </ion-item>
-            </ion-list>
         </div>
     </ion-content>
 </ion-view>

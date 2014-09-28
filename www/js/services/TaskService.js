@@ -1,5 +1,7 @@
 app.factory("TaskService", ["$rootScope", "$http", function($rootScope, $http){
     var TaskService = function(){
+        var _currentTaskObj = undefined;
+
         this.getTasksForEvent = function(eventId){
             return new Promise(function(resolve, reject){
                 $http.get($rootScope.serverBaseUrl + "task", {
@@ -8,6 +10,7 @@ app.factory("TaskService", ["$rootScope", "$http", function($rootScope, $http){
                     }
                 }).success(function(res){
                     if (res.status === "success"){
+                        console.log(res.results);
                         resolve(res.results);
                     } else{
                         console.error(res.error);
@@ -27,7 +30,7 @@ app.factory("TaskService", ["$rootScope", "$http", function($rootScope, $http){
                     eventId: eventId
                 }).success(function(res){
                     if (res.status === "success"){
-                        resolve(res.results);
+                        resolve();
                     } else{
                         console.error(res.error);
                         reject(res.error);
@@ -57,6 +60,50 @@ app.factory("TaskService", ["$rootScope", "$http", function($rootScope, $http){
                 });
             });
         };
+
+        this.updateCurrentTask = function(taskObj){
+            _currentTaskObj = taskObj;
+        };
+
+        this.getCurrentTask = function(){
+            return _currentTaskObj;
+        };
+
+        this.timeSlotSignUp = function(timeSlotId){
+            return new Promise(function(resolve, reject){
+                $http.post($rootScope.serverBaseUrl + "task/timeslot/signup", {
+                    timeSlotId: timeSlotId
+                }).success(function(res){
+                    if (res.status === "success"){
+                        resolve();
+                    } else{
+                        console.error(res.error);
+                        reject(res.error);
+                    }
+                }).error(function(err){
+                    console.error(err);
+                    reject(err);
+                });
+            });
+        };
+
+        this.timeSlotCancel = function(timeSlotId){
+            return new Promise(function(resolve, reject){
+                $http.post($rootScope.serverBaseUrl + "task/timeslot/cancel", {
+                    timeSlotId: timeSlotId
+                }).success(function(res){
+                    if (res.status === "success"){
+                        resolve();
+                    } else{
+                        console.error(res.error);
+                        reject(res.error);
+                    }
+                }).error(function(err){
+                    console.error(err);
+                    reject(err);
+                });
+            });
+        }
     };
     return new TaskService();
 }]);
