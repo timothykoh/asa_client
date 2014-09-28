@@ -51,7 +51,7 @@ app.controller("EventCtrl",
 
         $scope.deleteTask = function(idx){
             var task = $scope.tasks[idx];
-            TaskService.deleteTask(task.task_id, $scope.event_id)
+            TaskService.deleteTask(task.taskId)
             .then(function(){
                 console.log("delete task success");
                 $scope.$apply(function(){
@@ -79,52 +79,6 @@ app.controller("EventCtrl",
             $state.go("event-task");
             return;
         };
-        // $scope.showTaskPopup = function(){
-        //     $ionicPopup.show({
-        //         title: "Task Details",
-        //         templateUrl: "popups/add-task-popup.html",
-        //         scope: $scope,
-        //         buttons: [
-        //             {   text: "Cancel",
-        //                 onTap: function(e){
-        //                     $scope.task = {};
-        //                 }
-        //             },
-        //             {
-        //                 text: "Add",
-        //                 type: "button-positive",
-        //                 onTap: function(e){
-        //                     if ($scope.task.name === undefined || $scope.task.numPeople === undefined){
-        //                         e.preventDefault();
-        //                     } else{
-        //                         var taskObj = {
-        //                             name: $scope.task.name,
-        //                             numPeople: $scope.task.numPeople
-        //                         };
-        //                         // reset $scope.task so the fields will not have values
-        //                         // when the user clicks again
-        //                         $scope.task = {};
-
-        //                         TaskService.createTask(taskObj, $scope.event_id)
-        //                         .then(function(createdTaskObj){
-        //                             $scope.tasks.push(createdTaskObj);
-        //                             console.log("Task added");
-        //                         }, function(){
-        //                             $ionicPopup.show({
-        //                                 title: "<span class='red-text'>Failed to add task.</span>",
-        //                                 buttons: [
-        //                                     {
-        //                                         text: "Okay"
-        //                                     }
-        //                                 ]
-        //                             });
-        //                         });
-        //                     }
-        //                 }
-        //             }
-        //         ]
-        //     });
-        // };
 
         $scope.showExpensePopup = function(){
             $ionicPopup.show({

@@ -45,7 +45,6 @@ app.factory("TaskService", ["$rootScope", "$http", function($rootScope, $http){
         this.deleteTask = function(taskId, eventId){
             return new Promise(function(resolve, reject){
                 $http.post($rootScope.serverBaseUrl + "task/delete", {
-                    eventId: eventId,
                     taskId: taskId
                 }).success(function(res){
                     if (res.status === "success"){
