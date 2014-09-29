@@ -36,58 +36,61 @@ function removeSelfFromAssigneeArr(assigneeArr){
     }
 }
 
+function updateTask($scope, taskObj){
+    $scope.name = taskObj.name;
+    var months = ["January","February","March","April","May","June","July",
+                  "August", "September", "October", "November", "December"];
+    var dateTaskObjArr = taskObj.timeSlotObjArr.map(function(elem){
+        var dateObj = new Date(elem.date);
+        var dateStr = dateObj.getUTCDate() + " " + months[dateObj.getUTCMonth()] +
+                      " " + dateObj.getUTCFullYear();
+        var assigneeStr = buildAssigneeStr(elem.assigneeArr);
+        var hasSignedUp = false;
+        for (var i = 0; i < elem.assigneeArr.length; i++){
+            if (elem.assigneeArr[i].isSelf === true){
+                hasSignedUp = true;
+                break;
+            }
+        }
+        return {
+            date: elem.date,
+            formattedDate: dateStr,
+            timeSlotObjArr: [{
+                timeSlotId: elem.timeSlotId,
+                timeSlot: elem.timeSlot,
+                numPeople: elem.numPeople,
+                numAssignees: elem.numAssignees,
+                assigneeArr: elem.assigneeArr,
+                assigneeStr: assigneeStr,
+                hasSignedUp: hasSignedUp
+            }]
+        };
+    });
+
+    var groupedDateTaskObjArr = [];
+    var currDateTaskObj = undefined;
+    for (var i = 0; i < dateTaskObjArr.length; i++){
+        var dateTaskObj = dateTaskObjArr[i];
+        if (currDateTaskObj === undefined || currDateTaskObj.date !== dateTaskObj.date){
+            currDateTaskObj = dateTaskObj;
+            groupedDateTaskObjArr.push(currDateTaskObj);
+        } else{
+            currDateTaskObj.timeSlotObjArr = currDateTaskObj.timeSlotObjArr.concat(dateTaskObj.timeSlotObjArr);
+        }
+    }
+    $scope.dateTaskObjArr = groupedDateTaskObjArr;
+}
+
 app.controller("TaskCtrl",
     ["$scope", "TaskService", "$state", "$ionicPopup",
     function($scope, TaskService, $state, $ionicPopup){
         var taskObj = TaskService.getCurrentTask();
-        console.log(taskObj);
         if (taskObj === undefined){
             $state.go("event-list");
             return;
         }
-
-        $scope.name = taskObj.name;
-        var months = ["January","February","March","April","May","June","July",
-                      "August", "September", "October", "November", "December"];
-        var dateTaskObjArr = taskObj.timeSlotObjArr.map(function(elem){
-            var dateObj = new Date(elem.date);
-            var dateStr = dateObj.getUTCDate() + " " + months[dateObj.getUTCMonth()] +
-                          " " + dateObj.getUTCFullYear();
-            var assigneeStr = buildAssigneeStr(elem.assigneeArr);
-            var hasSignedUp = false;
-            for (var i = 0; i < elem.assigneeArr.length; i++){
-                if (elem.assigneeArr[i].isSelf === true){
-                    hasSignedUp = true;
-                    break;
-                }
-            }
-            return {
-                date: elem.date,
-                formattedDate: dateStr,
-                timeSlotObjArr: [{
-                    timeSlotId: elem.timeSlotId,
-                    timeSlot: elem.timeSlot,
-                    numPeople: elem.numPeople,
-                    numAssignees: elem.numAssignees,
-                    assigneeArr: elem.assigneeArr,
-                    assigneeStr: assigneeStr,
-                    hasSignedUp: hasSignedUp
-                }]
-            };
-        });
-
-        var groupedDateTaskObjArr = [];
-        var currDateTaskObj = undefined;
-        for (var i = 0; i < dateTaskObjArr.length; i++){
-            var dateTaskObj = dateTaskObjArr[i];
-            if (currDateTaskObj === undefined || currDateTaskObj.date !== dateTaskObj.date){
-                currDateTaskObj = dateTaskObj;
-                groupedDateTaskObjArr.push(currDateTaskObj);
-            } else{
-                currDateTaskObj.timeSlotObjArr = currDateTaskObj.timeSlotObjArr.concat(dateTaskObj.timeSlotObjArr);
-            }
-        }
-        $scope.dateTaskObjArr = groupedDateTaskObjArr;
+        var taskId = taskObj.taskId;
+        updateTask($scope, taskObj);
 
         $scope.timeSlotSignUp = function(timeSlotId, dateTaskObjIdx, timeSlotObjIdx){
             TaskService.timeSlotSignUp(timeSlotId)
@@ -135,6 +138,18 @@ app.controller("TaskCtrl",
                     okType: "button"
                 });
             });
-        }
+        };
+        var pollInterval = setInterval(function(){
+            TaskService.getTask(taskId).then(function(taskObj){
+                $scope.$apply(function(){
+                    updateTask($scope, taskObj);
+                });
+            });
+        }, 1000);
+
+        $scope.back = function(){
+            clearInterval(pollInterval);
+            $state.go("event");
+        };
     }
 ]);

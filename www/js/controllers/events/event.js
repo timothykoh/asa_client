@@ -1,3 +1,32 @@
+function updateEventDetails(eventId, $scope, AuthService, TaskService, ExpenseService){
+    AuthService.getUser().then(function(userObj){
+        $scope.$apply(function(){
+            $scope.isAdmin = userObj.is_admin;
+        });
+
+        if (userObj.is_admin){
+            TaskService.getTasksForEvent(eventId)
+            .then(function(tasks){
+                $scope.$apply(function(){
+                    console.log($scope.tasks);
+                    console.log(tasks);
+                    if ($scope.tasks != tasks){
+                        $scope.tasks = tasks;
+                    }
+                });
+            });
+            ExpenseService.getExpensesForEvent(eventId)
+            .then(function(expenses){
+                $scope.$apply(function(){
+                    if ($scope.expenses != expenses){
+                        $scope.expenses = expenses;
+                    }
+                });
+            });
+        }
+    });
+}
+
 app.controller("EventCtrl",
     ["$scope", "EventService", "AuthService", "TaskService", "ExpenseService", "$state", "$ionicPopup",
     function($scope, EventService, AuthService, TaskService, ExpenseService, $state, $ionicPopup){
@@ -26,28 +55,7 @@ app.controller("EventCtrl",
             });
         });
 
-        AuthService.getUser().then(function(userObj){
-            $scope.$apply(function(){
-                $scope.isAdmin = userObj.is_admin;
-            });
-
-            if (userObj.is_admin){
-                TaskService.getTasksForEvent(eventObj.event_id)
-                .then(function(tasks){
-                    $scope.$apply(function(){
-                        $scope.tasks = tasks;
-                    });
-                });
-                ExpenseService.getExpensesForEvent(eventObj.event_id)
-                .then(function(expenses){
-                    console.log("got expenses");
-                    console.log(expenses);
-                    $scope.$apply(function(){
-                        $scope.expenses = expenses;
-                    });
-                });
-            }
-        });
+        updateEventDetails($scope.event_id, $scope, AuthService, TaskService, ExpenseService);
 
         $scope.deleteTask = function(idx){
             var task = $scope.tasks[idx];
@@ -126,6 +134,15 @@ app.controller("EventCtrl",
                     }
                 ]
             })
-        }
+        };
+
+        var pollInterval = setInterval(function(){
+            updateEventDetails($scope.event_id, $scope, AuthService, TaskService, ExpenseService);
+        }, 1000);
+
+        $scope.back = function(){
+            clearInterval(pollInterval);
+            $state.go("event-list");
+        };
 
 }]);

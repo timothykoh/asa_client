@@ -2,15 +2,34 @@ app.factory("TaskService", ["$rootScope", "$http", function($rootScope, $http){
     var TaskService = function(){
         var _currentTaskObj = undefined;
 
-        this.getTasksForEvent = function(eventId){
+        this.getTask = function(taskId){
             return new Promise(function(resolve, reject){
                 $http.get($rootScope.serverBaseUrl + "task", {
+                    params: {
+                        taskId: taskId
+                    }
+                }).success(function(res){
+                    if (res.status === "success"){
+                        resolve(res.results);
+                    } else{
+                        console.error(res.error);
+                        reject(res.error);
+                    }
+                }).error(function(err){
+                    console.error(err);
+                    reject(err);
+                });
+            });
+        };
+
+        this.getTasksForEvent = function(eventId){
+            return new Promise(function(resolve, reject){
+                $http.get($rootScope.serverBaseUrl + "task/by_event", {
                     params: {
                         eventId: eventId
                     }
                 }).success(function(res){
                     if (res.status === "success"){
-                        console.log(res.results);
                         resolve(res.results);
                     } else{
                         console.error(res.error);
