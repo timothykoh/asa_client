@@ -1,29 +1,25 @@
 function updateEventDetails(eventId, $scope, AuthService, TaskService, ExpenseService){
-    AuthService.getUser().then(function(userObj){
+    return AuthService.getUser().then(function(userObj){
         $scope.$apply(function(){
             $scope.isAdmin = userObj.is_admin;
         });
 
-        if (userObj.is_admin){
-            TaskService.getTasksForEvent(eventId)
-            .then(function(tasks){
-                $scope.$apply(function(){
-                    console.log($scope.tasks);
-                    console.log(tasks);
-                    if ($scope.tasks != tasks){
-                        $scope.tasks = tasks;
-                    }
-                });
-            });
-            ExpenseService.getExpensesForEvent(eventId)
-            .then(function(expenses){
-                $scope.$apply(function(){
-                    if ($scope.expenses != expenses){
-                        $scope.expenses = expenses;
-                    }
-                });
-            });
+        if (!userObj.is_admin){
+            return;
         }
+        var taskPromise = TaskService.getTasksForEvent(eventId)
+        .then(function(tasks){
+            $scope.$apply(function(){
+                $scope.tasks = tasks;
+            });
+        });
+        var expensePromise = ExpenseService.getExpensesForEvent(eventId)
+        .then(function(expenses){
+            $scope.$apply(function(){
+                $scope.expenses = expenses;
+            });
+        });
+        return Promise.all([taskPromise, expensePromise]);
     });
 }
 
@@ -136,13 +132,11 @@ app.controller("EventCtrl",
             })
         };
 
-        var pollInterval = setInterval(function(){
-            updateEventDetails($scope.event_id, $scope, AuthService, TaskService, ExpenseService);
-        }, 1000);
-
-        $scope.back = function(){
-            clearInterval(pollInterval);
-            $state.go("event-list");
+        $scope.refresh = function(){
+            updateEventDetails($scope.event_id, $scope, AuthService, TaskService, ExpenseService)
+            .then(function(){
+                $scope.$broadcast('scroll.refreshComplete');
+            });
         };
 
 }]);

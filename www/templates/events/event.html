@@ -1,8 +1,9 @@
 <ion-view title="{{name}}">
     <ion-nav-buttons side="left">
-        <button class="button button-clear icon-left ion-ios7-arrow-left" ng-click="back()"></button>
+        <a class="button button-clear icon-left ion-ios7-arrow-left" href="#/event-list"></a>
     </ion-nav-buttons>
     <ion-content>
+        <ion-refresher on-refresh="refresh()"></ion-refresher>
         <div class="event-key-details" style="background-image:url({{imgSrc}})">
             <div class="overlay">
                 <h2>{{name}}</h2>

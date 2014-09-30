@@ -1,9 +1,10 @@
 <ion-view title="{{name}}">
     <ion-nav-buttons side="left">
-        <button class="button button-clear icon-left ion-ios7-arrow-left" ng-click="back()"></button>
+        <a class="button button-clear icon-left ion-ios7-arrow-left" href="#/event"></a>
     </ion-nav-buttons>
     <ion-content>
-        <ul class="list task-timeslot-list">
+    <ion-refresher on-refresh="refresh()"></ion-refresher>
+        <ul ng-if="dateTaskObjArr.length > 0" class="list task-timeslot-list">
             <li class="item item-divider" ng-repeat-start="dateTaskObj in dateTaskObjArr">{{dateTaskObj.formattedDate}}</li>
             <li class="item" ng-repeat="timeSlotObj in dateTaskObj.timeSlotObjArr">
                 <span class="time">{{timeSlotObj.timeSlot}}:00</span>
@@ -14,5 +15,6 @@
             </li>
             <div ng-repeat-end=""></div>
         </ul>
+        <span class="item" ng-if="dateTaskObjArr.length === 0">No timeslots assigned</span>
     </ion-content>
 </ion-view>

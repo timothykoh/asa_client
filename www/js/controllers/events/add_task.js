@@ -1,30 +1,32 @@
-function getDateArr(startDateObj, n){
-    var dateArr = [];
-    var secsInDay = 86400000;
-    for (var i = 0; i < n; i++){
-        var dateObj = new Date(startDateObj.getTime() + i * secsInDay);
-        var dateStr = (dateObj.getUTCMonth() + 1)  + "/" + dateObj.getUTCDate() + "/" + dateObj.getUTCFullYear();
-        dateArr.push(dateStr);
-    }
-    return dateArr;
-}
-function genTimeslotArr(start, end){
-    var timeSlotArr = new Array(end - start + 1);
-    for (var i = start; i <= end; i++){
-        timeSlotArr[i-start] = i;
-    }
-    return timeSlotArr;
-}
 
 app.controller("EventAddTaskCtrl",
     ["$scope", "TaskService", "EventService", "$ionicPopup", "$state",
     function($scope, TaskService, EventService, $ionicPopup, $state){
+        function getDateArr(startDateObj, n){
+            var dateArr = [];
+            var secsInDay = 86400000;
+            for (var i = 0; i < n; i++){
+                var dateObj = new Date(startDateObj.getTime() + i * secsInDay);
+                var dateStr = (dateObj.getUTCMonth() + 1)  + "/" + dateObj.getUTCDate() + "/" + dateObj.getUTCFullYear();
+                dateArr.push(dateStr);
+            }
+            return dateArr;
+        }
+
+        function genTimeslotArr(start, end){
+            var timeSlotArr = new Array(end - start + 1);
+            for (var i = start; i <= end; i++){
+                timeSlotArr[i-start] = i;
+            }
+            return timeSlotArr;
+        }
+
         var eventObj = EventService.getCurrentEvent();
         if (eventObj === undefined){
             $state.go("event-list");
         }
-        var TIME_START = 8;
-        var TIME_END = 22;
+        var TIME_START = 0;
+        var TIME_END = 23;
         var COL_WIDTH = 105;
         var HDR_COL_WIDTH = 50;
         $scope.timeSlots = genTimeslotArr(TIME_START, TIME_END);
