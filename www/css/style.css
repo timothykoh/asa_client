@@ -196,10 +196,16 @@ input[type=date].pseudo-placeholder:hover::before{
     .task-timeslot-list .people{
         display: inline-block;
         width: 100px;
+        text-align: right;
         float: right;
+        margin-right: 10px;
     }
     .task-timeslot-list .assignee-str{
         color: #909090;
+    }
+
+    .task-timeslot-list .list-item-btn{
+        width: 60px;
     }
     
 .item-textarea{
@@ -216,4 +222,23 @@ input[type=date].pseudo-placeholder:hover::before{
 
 .clickable{
     cursor: pointer;
+}
+
+.assignee-region{
+    display: inline-block;
+}
+    .assignee-region img{
+        border-radius: 5px;
+        margin-left: 5px;
+        vertical-align: top;
+    }
+
+.small-dotted-box{
+    vertical-align: top;
+    border: 1px dashed #999;
+    width: 25px;
+    height: 25px;
+    display: inline-block;
+    border-radius: 5px;
+    margin-left: 5px;
 }

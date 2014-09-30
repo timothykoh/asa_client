@@ -26,6 +26,7 @@ app.controller("EventCtrl",
                 return Promise.all([taskPromise, expensePromise]);
             });
         }
+
         var eventObj = EventService.getCurrentEvent();
         if (eventObj === undefined){
             $state.go("event-list");
@@ -141,6 +142,8 @@ app.controller("EventCtrl",
             updateEventDetails($scope.event_id, $scope, AuthService, TaskService, ExpenseService)
             .then(function(){
                 $scope.$broadcast('scroll.refreshComplete');
+            }, function(){
+                $scope.$broadcast('scroll.refreshComplete');
             });
         };
 
@@ -192,6 +195,6 @@ app.controller("EventCtrl",
                     });
                 });
             }
-        }
+        };
 
 }]);

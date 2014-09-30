@@ -8,7 +8,10 @@
             <li class="item item-divider" ng-repeat-start="dateTaskObj in dateTaskObjArr">{{dateTaskObj.formattedDate}}</li>
             <li class="item" ng-repeat="timeSlotObj in dateTaskObj.timeSlotObjArr">
                 <span class="time">{{timeSlotObj.timeSlot}}:00</span>
-                <span class="assignee-str">{{timeSlotObj.assigneeStr}}</span>
+                <!-- <span class="assignee-str">{{timeSlotObj.assigneeStr}}</span> -->
+                <div class="assignee-region">
+                    <img ng-repeat="assignee in timeSlotObj.assigneeArr" ng-src="http://graph.facebook.com/{{assignee.fbId}}/picture?height=25&width=25" width="25"  height="25" /><div class="small-dotted-box" ng-repeat="i in genCollection(timeSlotObj.numPeople - timeSlotObj.numAssignees) track by $index"></div>
+                </div>
                 <button ng-if="!timeSlotObj.hasSignedUp" class="button button-small button-balanced list-item-btn" ng-click="timeSlotSignUp(timeSlotObj.timeSlotId, $parent.$parent.$index, $index)">Sign Up</button>
                 <button ng-if="timeSlotObj.hasSignedUp" class="button button-small button-assertive list-item-btn" ng-click="timeSlotCancel(timeSlotObj.timeSlotId, $parent.$parent.$index, $index)">Cancel</button>
                 <span class="people">{{timeSlotObj.numAssignees}}/{{timeSlotObj.numPeople}} people</span>

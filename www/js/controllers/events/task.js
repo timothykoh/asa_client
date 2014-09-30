@@ -1,6 +1,6 @@
 app.controller("TaskCtrl",
-    ["$scope", "TaskService", "$state", "$ionicPopup",
-    function($scope, TaskService, $state, $ionicPopup){
+    ["$scope", "TaskService", "AuthService", "$state", "$ionicPopup",
+    function($scope, TaskService, AuthService, $state, $ionicPopup){
         function buildAssigneeStr(assigneeArr){
             if (assigneeArr.length === 0){
                 return "";
@@ -26,8 +26,13 @@ app.controller("TaskCtrl",
             return s;
         }
 
-        function addSelfToAssigneeArr(assigneeArr){
-            assigneeArr.unshift({isSelf:true});
+        function addSelfToAssigneeArr(assigneeArr, userId, name, fbId){
+            assigneeArr.unshift({
+                userId: userId,
+                name: name,
+                fbId: fbId,
+                isSelf:true
+            });
         }
 
         function removeSelfFromAssigneeArr(assigneeArr){
@@ -89,7 +94,9 @@ app.controller("TaskCtrl",
             }
             $scope.dateTaskObjArr = groupedDateTaskObjArr;
         }
+
         var taskObj = TaskService.getCurrentTask();
+        console.log(taskObj);
         if (taskObj === undefined){
             $state.go("event-list");
             return;
@@ -100,14 +107,16 @@ app.controller("TaskCtrl",
         $scope.timeSlotSignUp = function(timeSlotId, dateTaskObjIdx, timeSlotObjIdx){
             TaskService.timeSlotSignUp(timeSlotId)
             .then(function(){
-                $scope.$apply(function(){
-                    var dateTaskObj = $scope.dateTaskObjArr[dateTaskObjIdx];
-                    var timeSlotObj = dateTaskObj.timeSlotObjArr[timeSlotObjIdx];
-                    addSelfToAssigneeArr(timeSlotObj.assigneeArr);
-                    var assigneeStr = buildAssigneeStr(timeSlotObj.assigneeArr);
-                    timeSlotObj.assigneeStr = assigneeStr;
-                    timeSlotObj.numAssignees += 1;
-                    timeSlotObj.hasSignedUp = true;
+                AuthService.getUser().then(function(userObj){
+                    $scope.$apply(function(){
+                        var dateTaskObj = $scope.dateTaskObjArr[dateTaskObjIdx];
+                        var timeSlotObj = dateTaskObj.timeSlotObjArr[timeSlotObjIdx];
+                        addSelfToAssigneeArr(timeSlotObj.assigneeArr, userObj.user_id, userObj.name, userObj.fb_id);
+                        var assigneeStr = buildAssigneeStr(timeSlotObj.assigneeArr);
+                        timeSlotObj.assigneeStr = assigneeStr;
+                        timeSlotObj.numAssignees += 1;
+                        timeSlotObj.hasSignedUp = true;
+                    });
                 });
                 // $ionicPopup.alert({
                 //     title: "Sign up success!",
@@ -152,6 +161,10 @@ app.controller("TaskCtrl",
                 });
                 $scope.$broadcast('scroll.refreshComplete');
             });
-        }
+        };
+
+        $scope.genCollection = function(n){
+            return new Array(n);
+        };
     }
 ]);
