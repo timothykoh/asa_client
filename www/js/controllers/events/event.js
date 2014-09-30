@@ -1,31 +1,31 @@
-function updateEventDetails(eventId, $scope, AuthService, TaskService, ExpenseService){
-    return AuthService.getUser().then(function(userObj){
-        $scope.$apply(function(){
-            $scope.isAdmin = userObj.is_admin;
-        });
-
-        if (!userObj.is_admin){
-            return;
-        }
-        var taskPromise = TaskService.getTasksForEvent(eventId)
-        .then(function(tasks){
-            $scope.$apply(function(){
-                $scope.tasks = tasks;
-            });
-        });
-        var expensePromise = ExpenseService.getExpensesForEvent(eventId)
-        .then(function(expenses){
-            $scope.$apply(function(){
-                $scope.expenses = expenses;
-            });
-        });
-        return Promise.all([taskPromise, expensePromise]);
-    });
-}
 
 app.controller("EventCtrl",
     ["$scope", "EventService", "AuthService", "TaskService", "ExpenseService", "$state", "$ionicPopup",
     function($scope, EventService, AuthService, TaskService, ExpenseService, $state, $ionicPopup){
+        function updateEventDetails(eventId, $scope, AuthService, TaskService, ExpenseService){
+            return AuthService.getUser().then(function(userObj){
+                $scope.$apply(function(){
+                    $scope.isAdmin = userObj.is_admin;
+                });
+
+                if (!userObj.is_admin){
+                    return;
+                }
+                var taskPromise = TaskService.getTasksForEvent(eventId)
+                .then(function(tasks){
+                    $scope.$apply(function(){
+                        $scope.tasks = tasks;
+                    });
+                });
+                var expensePromise = ExpenseService.getExpensesForEvent(eventId)
+                .then(function(expenses){
+                    $scope.$apply(function(){
+                        $scope.expenses = expenses;
+                    });
+                });
+                return Promise.all([taskPromise, expensePromise]);
+            });
+        }
         var eventObj = EventService.getCurrentEvent();
         if (eventObj === undefined){
             $state.go("event-list");
@@ -43,6 +43,11 @@ app.controller("EventCtrl",
 
         $scope.tasks = [];
         $scope.expenses = [];
+
+        $scope.editForm = {
+            description: $scope.description,
+            budget: parseInt($scope.budget)
+        };
 
         EventService.getEventImageSrc(eventObj.event_id)
         .then(function(imgSrc){
@@ -138,5 +143,55 @@ app.controller("EventCtrl",
                 $scope.$broadcast('scroll.refreshComplete');
             });
         };
+
+        $scope.editDesc = function(newDesc){
+            if ($scope.descEdit === undefined || $scope.descEdit === false){
+                // toggle edit mode to active
+                $scope.descEdit = true;
+            } else{
+                // toggle edit mode off, also when change is submitted
+                if (newDesc === $scope.description){
+                    $scope.descEdit = false;                    
+                    return;
+                }
+                EventService.updateDescription($scope.event_id, newDesc)
+                .then(function(){
+                    $scope.$apply(function(){
+                        $scope.description = newDesc;
+                        $scope.descEdit = false;                    
+                    });
+                }, function(){
+                    $ionicPopup.alert({
+                        title: "<span class='red-text'>Failed to update description.</span>",
+                        okType: "button"
+                    });
+                });
+            }
+        };
+
+        $scope.editBudget = function(newBudget){
+            if ($scope.budgetEdit === undefined || $scope.budgetEdit === false){
+                // toggle edit mode to active
+                $scope.budgetEdit = true;
+            } else{
+                // toggle edit mode off, also when change is submitted
+                if (String(newBudget) === $scope.budget){
+                    $scope.budgetEdit = false;                    
+                    return;
+                }
+                EventService.updateBudget($scope.event_id, newBudget)
+                .then(function(){
+                    $scope.$apply(function(){
+                        $scope.budget = newBudget;
+                        $scope.budgetEdit = false;                    
+                    });
+                }, function(){
+                    $ionicPopup.alert({
+                        title: "<span class='red-text'>Failed to update budget.</span>",
+                        okType: "button"
+                    });
+                });
+            }
+        }
 
 }]);

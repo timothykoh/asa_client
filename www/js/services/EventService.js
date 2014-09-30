@@ -27,6 +27,45 @@ app.factory("EventService", ["$rootScope", "$http", function($rootScope, $http){
                     if (res.status === "success"){
                         resolve(res.results);
                     } else{
+                        console.error(res.error);
+                        reject(res.error);
+                    }
+                }).error(function(err){
+                    console.error(err);
+                    reject(err);
+                });
+            });
+        };
+
+        this.updateDescription = function(eventId, newDesc){
+            return new Promise(function(resolve, reject){
+                $http.post($rootScope.serverBaseUrl + "event/update_description",{
+                    eventId: eventId,
+                    description: newDesc
+                }).success(function(res){
+                    if (res.status === "success"){
+                        resolve(res.results);
+                    } else{
+                        console.error(res.error);
+                        reject(res.error);
+                    }
+                }).error(function(err){
+                    console.error(err);
+                    reject(err);
+                });
+            });
+        };
+
+        this.updateBudget = function(eventId, newBudget){
+            return new Promise(function(resolve, reject){
+                $http.post($rootScope.serverBaseUrl + "event/update_budget",{
+                    eventId: eventId,
+                    budget: newBudget
+                }).success(function(res){
+                    if (res.status === "success"){
+                        resolve(res.results);
+                    } else{
+                        console.error(res.error);
                         reject(res.error);
                     }
                 }).error(function(err){

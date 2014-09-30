@@ -202,3 +202,18 @@ input[type=date].pseudo-placeholder:hover::before{
         color: #909090;
     }
     
+.item-textarea{
+    margin-top: 10px;
+    font-size: 14px;
+    color: #666;
+}
+
+.budget-edit-box{
+    margin-top: 10px;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.clickable{
+    cursor: pointer;
+}
