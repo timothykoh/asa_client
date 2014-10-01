@@ -220,10 +220,6 @@ input[type=date].pseudo-placeholder:hover::before{
     padding-bottom: 0;
 }
 
-.clickable{
-    cursor: pointer;
-}
-
 .assignee-region{
     display: inline-block;
 }
@@ -285,4 +281,10 @@ input[type=date].pseudo-placeholder:hover::before{
     line-height: 38px;   
     color: #aaa;
     vertical-align: top;
+}
+
+.event-edit-btn{
+    float: right;
+    cursor: pointer;
+    font-size: 23px;
 }

@@ -14,7 +14,7 @@
         <div class="card">
             <div class="item item-text-wrap">
                 <span class="thin-header">Description</span>
-                <i ng-class="{balanced: descEdit}" class="ion-edit clickable" ng-click="editDesc(editForm.description)"></i>
+                <i ng-class="{'ion-checkmark': descEdit, 'ion-edit': !descEdit}" class="event-edit-btn" ng-click="editDesc(editForm.description)"></i>
                 <p ng-if="descEdit !== true">{{description}}</p>
                 <textarea ng-model="editForm.description" ng-if="descEdit" class="item item-textarea" rows="5">{{editForm.description}}</textarea>
             </div>
@@ -22,7 +22,7 @@
         <div class="card">
             <div class="item">
                 <span class="thin-header">Budget</span>
-                <i ng-class="{balanced: budgetEdit}" class="ion-edit clickable"  ng-click="editBudget(editForm.budget)"></i>
+                <i ng-class="{'ion-checkmark' : budgetEdit, 'ion-edit': !budgetEdit}" class="event-edit-btn"  ng-click="editBudget(editForm.budget)"></i>
                 <p ng-if="budgetEdit !== true">${{budget}}</p>
                 <label ng-if="budgetEdit" class="item item-input budget-edit-box">
                     <input ng-model="editForm.budget" type="number" >
