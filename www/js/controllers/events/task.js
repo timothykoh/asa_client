@@ -1,31 +1,6 @@
 app.controller("TaskCtrl",
     ["$scope", "TaskService", "AuthService", "$state", "$ionicPopup",
     function($scope, TaskService, AuthService, $state, $ionicPopup){
-        function buildAssigneeStr(assigneeArr){
-            if (assigneeArr.length === 0){
-                return "";
-            }
-            var s = "";
-            var isSelfAssigned = false;
-            for (var i = 0; i < assigneeArr.length; i++){
-                var assignee = assigneeArr[i];
-                if (assignee.isSelf){
-                    s = "You, " + s;
-                    isSelfAssigned = true;
-                } else{
-                    s += assignee.name + ", ";
-                }
-            }
-            s = s.replace(/, $/g,"");
-            if (!isSelfAssigned && assigneeArr.length == 1){
-                var verb = "has";
-            } else{
-                verb = "have";
-            }
-            s += " " + verb + " signed up";
-            return s;
-        }
-
         function addSelfToAssigneeArr(assigneeArr, userId, name, fbId){
             assigneeArr.unshift({
                 userId: userId,
@@ -55,7 +30,6 @@ app.controller("TaskCtrl",
                 var dateObj = new Date(elem.date);
                 var dateStr = dateObj.getUTCDate() + " " + months[dateObj.getUTCMonth()] +
                               " " + dateObj.getUTCFullYear();
-                var assigneeStr = buildAssigneeStr(elem.assigneeArr);
                 var hasSignedUp = false;
                 for (var i = 0; i < elem.assigneeArr.length; i++){
                     if (elem.assigneeArr[i].isSelf === true){
@@ -72,7 +46,6 @@ app.controller("TaskCtrl",
                         numPeople: elem.numPeople,
                         numAssignees: elem.numAssignees,
                         assigneeArr: elem.assigneeArr,
-                        assigneeStr: assigneeStr,
                         hasSignedUp: hasSignedUp
                     }]
                 };
@@ -96,7 +69,6 @@ app.controller("TaskCtrl",
         }
 
         var taskObj = TaskService.getCurrentTask();
-        console.log(taskObj);
         if (taskObj === undefined){
             $state.go("event-list");
             return;
@@ -112,8 +84,6 @@ app.controller("TaskCtrl",
                         var dateTaskObj = $scope.dateTaskObjArr[dateTaskObjIdx];
                         var timeSlotObj = dateTaskObj.timeSlotObjArr[timeSlotObjIdx];
                         addSelfToAssigneeArr(timeSlotObj.assigneeArr, userObj.user_id, userObj.name, userObj.fb_id);
-                        var assigneeStr = buildAssigneeStr(timeSlotObj.assigneeArr);
-                        timeSlotObj.assigneeStr = assigneeStr;
                         timeSlotObj.numAssignees += 1;
                         timeSlotObj.hasSignedUp = true;
                     });
@@ -137,8 +107,6 @@ app.controller("TaskCtrl",
                     var dateTaskObj = $scope.dateTaskObjArr[dateTaskObjIdx];
                     var timeSlotObj = dateTaskObj.timeSlotObjArr[timeSlotObjIdx];
                     removeSelfFromAssigneeArr(timeSlotObj.assigneeArr);
-                    var assigneeStr = buildAssigneeStr(timeSlotObj.assigneeArr);
-                    timeSlotObj.assigneeStr = assigneeStr;
                     timeSlotObj.numAssignees -= 1;
                     timeSlotObj.hasSignedUp = false;
                 });
@@ -163,8 +131,28 @@ app.controller("TaskCtrl",
             });
         };
 
-        $scope.genCollection = function(n){
-            return new Array(n);
+        $scope.genBoxCollection = function(numPeople, numAssignees, maxLen){
+            if (maxLen === undefined || numPeople < maxLen){
+                var len = numPeople;
+            } else{
+                len = maxLen;
+            }
+            len -= numAssignees;
+            return new Array(len);;
         };
+
+        $scope.displaySignUps = function(timeSlotObj, dateStr){
+            $scope.timeSlotDetails = timeSlotObj;
+            var timeSlot = timeSlotObj.timeSlot;
+            $ionicPopup.show({
+                title: dateStr + " - " + timeSlot + ":00",
+                templateUrl: "popups/task-signups-popup.html",
+                scope: $scope,
+                buttons: [{
+                    text: "Okay",
+                    type: "button-default"
+                }]
+            });
+        }
     }
 ]);

@@ -1,0 +1,7 @@
+<div class="signup-popup">
+    <div ng-repeat="assignee in timeSlotDetails.assigneeArr">
+        <img ng-src="http://graph.facebook.com/{{assignee.fbId}}/picture?height=40&width=40" width="40"  height="40" />
+        <span>{{assignee.name}}</span>
+    </div>
+    <div ng-repeat="i in genBoxCollection(timeSlotDetails.numPeople, timeSlotDetails.numAssignees) track by $index" class="dotted-box">{{$index + 1 + timeSlotDetails.numAssignees}}</div>
+</div>

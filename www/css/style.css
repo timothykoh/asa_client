@@ -241,4 +241,48 @@ input[type=date].pseudo-placeholder:hover::before{
     display: inline-block;
     border-radius: 5px;
     margin-left: 5px;
+    text-align: center;
+    color: #aaa;
+    font-size: 14px;
+}
+.small-gray-box{
+    vertical-align: top;
+    width: 25px;
+    height: 25px;
+    line-height: 23px;
+    display: inline-block;
+    border-radius: 5px;
+    margin-left: 5px;
+    text-align: center;
+    background-color: #666;
+    color: #e0e0e0;
+    font-size: 14px;
+}
+
+.signup-popup{
+    max-height: 200px;
+    overflow: auto;
+}
+    .signup-popup div{
+        margin-top: 5px;
+    }
+    .signup-popup img{
+        border-radius: 5px;
+        vertical-align: top;
+    }
+    .signup-popup span{
+        vertical-align: top;
+        line-height: 40px;
+        margin-left: 5px;
+    }
+
+.dotted-box{
+    border: 1px dashed #999;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    border-radius: 5px;
+    line-height: 38px;   
+    color: #aaa;
+    vertical-align: top;
 }
