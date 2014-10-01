@@ -16,7 +16,9 @@
                 <span class="thin-header">Description</span>
                 <i ng-class="{'ion-checkmark': descEdit, 'ion-edit': !descEdit}" class="event-edit-btn" ng-click="editDesc(editForm.description)"></i>
                 <p ng-if="descEdit !== true">{{description}}</p>
-                <textarea ng-model="editForm.description" ng-if="descEdit" class="item item-textarea" rows="5">{{editForm.description}}</textarea>
+                <div class="border-wrapper" ng-if="descEdit" >
+                    <textarea ng-model="editForm.description" class="item-textarea" rows="5">{{editForm.description}}</textarea>
+                </div>
             </div>
         </div>
         <div class="card">
