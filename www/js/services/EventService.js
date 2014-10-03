@@ -96,10 +96,49 @@ app.factory("EventService", ["$rootScope", "$http", function($rootScope, $http){
                         reject(res.error);
                     }
                 }).error(function(err){
+                    console.error(err);
                     reject(err);
                 });
             });
         };
+
+        this.updateAttendance = function(eventId, isGoing){
+            return new Promise(function(resolve, reject){
+                $http.post($rootScope.serverBaseUrl + "event/attendance", {
+                    eventId: eventId,
+                    isGoing: isGoing
+                }).success(function(res){
+                    if (res.status === "success"){
+                        resolve();
+                    } else{
+                        reject(res.error);
+                    }
+                }).error(function(err){
+                    console.error(err);
+                    reject(err);
+                });
+            });
+        };
+
+        this.getAttendance = function(eventId){
+            return new Promise(function(resolve, reject){
+                $http.get($rootScope.serverBaseUrl + "event/attendance", {
+                    params: {
+                        eventId: eventId
+                    }
+                }).success(function(res){
+                    if (res.status === "success"){
+                        resolve(res.results);
+                    } else{
+                        console.error(res.error);
+                        reject(res.error);
+                    }
+                }).error(function(err){
+                    console.error(err);
+                    reject(err);
+                });
+            });
+        }
     };
 
     return new EventService();

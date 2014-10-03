@@ -1,8 +1,22 @@
 
 app.controller("EventCtrl",
-    ["$scope", "EventService", "AuthService", "TaskService", "ExpenseService", "$state", "$ionicPopup",
-    function($scope, EventService, AuthService, TaskService, ExpenseService, $state, $ionicPopup){
-        function updateEventDetails(eventId, $scope, AuthService, TaskService, ExpenseService){
+    ["$scope",
+     "EventService",
+     "AuthService",
+     "TaskService",
+     "ExpenseService",
+     "$state",
+     "$ionicPopup",
+     "$ionicActionSheet",
+    function($scope,
+             EventService,
+             AuthService,
+             TaskService,
+             ExpenseService,
+             $state,
+             $ionicPopup,
+             $ionicActionSheet){
+        function updateEventDetails(eventId, $scope, AuthService, TaskService, ExpenseService, EventService){
             return AuthService.getUser().then(function(userObj){
                 $scope.$apply(function(){
                     $scope.isAdmin = userObj.is_admin;
@@ -11,19 +25,27 @@ app.controller("EventCtrl",
                 if (!userObj.is_admin){
                     return;
                 }
-                var taskPromise = TaskService.getTasksForEvent(eventId)
-                .then(function(tasks){
+                var taskPromise = TaskService.getTasksForEvent(eventId);
+                var expensePromise = ExpenseService.getExpensesForEvent(eventId);
+                var attendancePromise = EventService.getAttendance(eventId);
+                console.log("HE");
+                return Promise.all([taskPromise, expensePromise, attendancePromise]).
+                then(function(values){
+                    console.log("DONE");
                     $scope.$apply(function(){
-                        $scope.tasks = tasks;
+                        $scope.tasks = values[0];
+                        $scope.expenses = values[1];
+                        $scope.isGoing = values[2];
+                        console.log(values);
+                        if ($scope.isGoing){
+                            $scope.attendanceState = "Going";
+                        } else{
+                            $scope.attendanceState = "Not Going";
+                        }
                     });
+                }, function(err){
+                    console.error(err);
                 });
-                var expensePromise = ExpenseService.getExpensesForEvent(eventId)
-                .then(function(expenses){
-                    $scope.$apply(function(){
-                        $scope.expenses = expenses;
-                    });
-                });
-                return Promise.all([taskPromise, expensePromise]);
             });
         }
 
@@ -38,6 +60,7 @@ app.controller("EventCtrl",
         $scope.date = eventObj.date;
         $scope.location = eventObj.location;
         $scope.budget = eventObj.budget;
+
 
         $scope.task = {}; //used for adding new tasks
         $scope.expense = {}; //used for adding new expenses
@@ -57,7 +80,7 @@ app.controller("EventCtrl",
             });
         });
 
-        updateEventDetails($scope.event_id, $scope, AuthService, TaskService, ExpenseService);
+        updateEventDetails($scope.event_id, $scope, AuthService, TaskService, ExpenseService, EventService);
 
         $scope.deleteTask = function(idx){
             var task = $scope.tasks[idx];
@@ -139,7 +162,7 @@ app.controller("EventCtrl",
         };
 
         $scope.refresh = function(){
-            updateEventDetails($scope.event_id, $scope, AuthService, TaskService, ExpenseService)
+            updateEventDetails($scope.event_id, $scope, AuthService, TaskService, ExpenseService, EventService)
             .then(function(){
                 $scope.$broadcast('scroll.refreshComplete');
             }, function(){
@@ -196,5 +219,45 @@ app.controller("EventCtrl",
                 });
             }
         };
+
+        $scope.updateAttendance = function(isGoing){
+            EventService.updateAttendance($scope.event_id, isGoing)
+            .then(function(){
+                $scope.$apply(function(){
+                    $scope.isGoing = isGoing;
+                    if ($scope.isGoing){
+                        $scope.attendanceState = "Going";
+                    } else{
+                        $scope.attendanceState = "Not Going";
+                    }
+                });
+            }, function(){
+                $ionicPopup.alert({
+                    title: "<span class='red-text'>Failed to update attendance.</span>",
+                    okType: "button"
+                });
+            });
+        };
+
+        $scope.openAttendanceMenu = function(){
+            $ionicActionSheet.show({
+                buttons: [
+                    {text: "Going"},
+                    {text: "Not Going"}
+                ],
+                cancelText: "<span class='assertive'/>Cancel</span>",
+                cancel: function(){
+
+                },
+                buttonClicked: function(index){
+                    if (index === 0){
+                        $scope.updateAttendance(true);
+                    } else if(index === 1){
+                        $scope.updateAttendance(false);
+                    }
+                    return true;
+                }
+            });
+        }
 
 }]);

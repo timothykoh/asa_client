@@ -76,7 +76,7 @@ input[type=date].pseudo-placeholder:hover::before{
     display: none;
 }
 .event-key-details{
-    height: 200px;
+    height: 250px;
     width: 100%;
     background-size: cover;
     background-position: center;
@@ -292,4 +292,27 @@ input[type=date].pseudo-placeholder:hover::before{
     float: right;
     cursor: pointer;
     font-size: 26px;
+}
+
+.event-outline-btn{
+    width: 100px;
+    min-height: 40px;
+    height: 40px;
+    line-height: 40px;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.attendance-menu-btn{
+    width: 120px;
+}
+
+.button-separator{
+    display: inline-block;
+    height: 26px;
+    margin-top: 7px;
+    margin-left: 3px;
+    margin-right: 3px;
+    border-left: 1px solid #b2b2b2;
+    float: right;
 }
