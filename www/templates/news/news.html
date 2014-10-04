@@ -3,6 +3,7 @@
         <a ng-if="isLoggedIn === true" class="button" href="#/create-news">Create</a>
     </ion-nav-buttons>
     <ion-content>
+        <ion-refresher on-refresh="refresh()"></ion-refresher>
         <div class="list card" ng-repeat="news in newsList">
             <div class="item item-avatar">
                 <img ng-src="http://graph.facebook.com/{{news.creator_fb_id}}/picture?height=40&width=40" alt="" class="news-thumbnail">
@@ -30,7 +31,6 @@
                 <i class="icon ion-share"></i>
                 Share
             </a> -->
-          </div>
         </div>
         <br>
     </ion-content>
