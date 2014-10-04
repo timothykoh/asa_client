@@ -322,6 +322,7 @@ input[type=date].pseudo-placeholder:hover::before{
 }
     .event-attendee-pics img{
         margin-right: 5px;
+        border-radius: 5px;
     }
 .event-attendee-str{
     display: block;
@@ -329,8 +330,28 @@ input[type=date].pseudo-placeholder:hover::before{
 }
 
 .user-tasks-list{
-    max-height: 300px;
+    max-height: 200px;
     overflow-y: auto;
     overflow-x: hidden;
     border: 1px solid #ddd;
 }
+
+.attendance-list{
+    max-height: 200px;
+    overflow: auto;
+}
+    .attendance-list div{
+        margin-bottom: 5px;
+    }
+    .attendance-list div:last-child{
+        margin-bottom: 0;
+    }
+    .attendance-list img{
+        border-radius: 5px;
+        vertical-align: top;
+    }
+    .attendance-list span{
+        vertical-align: top;
+        line-height: 40px;
+        margin-left: 5px;
+    }

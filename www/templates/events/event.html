@@ -14,7 +14,7 @@
                 <button ng-show="isLoggedIn && isGoing !== undefined" class="button button-outline event-outline-btn attendance-menu-btn icon-right ion-navicon" ng-click="openAttendanceMenu()">{{attendanceState}}<i class="button-separator"></i></button>
             </div>
         </div>
-        <div class="card" ng-show="goingArr.length > 0">
+        <div class="card" ng-show="goingArr.length > 0" ng-click="showAttendanceListPopup()">
             <div class="item">
                 <div class="event-attendee-pics">
                     <img ng-repeat="goingUser in goingArr | limitTo: 6" ng-src="http://graph.facebook.com/{{goingUser.fb_id}}/picture?height=40&width=40" width="40"  height="40" />

@@ -321,7 +321,7 @@ app.controller("EventCtrl",
                 ]
             })
         };
-        
+
         $scope.openFinanceMenu = function(){
             $ionicActionSheet.show({
                 buttons: [
@@ -337,7 +337,18 @@ app.controller("EventCtrl",
                     }
                     return true;
                 }
-            })
-        }
+            });
+        };
+
+        $scope.showAttendanceListPopup = function(){
+            $ionicPopup.show({
+                title: "Attendee List",
+                templateUrl: "popups/attendance-list-popup.html",
+                scope: $scope,
+                buttons: [
+                    {text: "Okay"}
+                ]
+            });
+        };
 
 }]);
