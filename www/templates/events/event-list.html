@@ -3,6 +3,7 @@
         <a ng-if="isLoggedIn === true && isAdmin === true" class="button" href="#/create-event">Create</a>
     </ion-nav-buttons>
     <ion-content>
+        <ion-refresher on-refresh="refresh()"></ion-refresher>
         <ion-list>
             <ion-item ng-repeat="event in events" ng-click="viewEvent($parent.$index)">
                 <span>{{event.name}}</span>
