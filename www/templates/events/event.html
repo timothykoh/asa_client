@@ -34,7 +34,7 @@
                 </div>
             </div>
         </div>
-        <div class="card">
+        <div ng-if="isAdmin === true" class="card">
             <div class="item">
                 <span class="thin-header">Budget</span>
                 <i ng-if="isAdmin === true" ng-class="{'ion-checkmark' : budgetEdit, 'ion-edit': !budgetEdit}" class="event-edit-btn"  ng-click="editBudget(editForm.budget)"></i>
