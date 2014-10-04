@@ -1,0 +1,5 @@
+<div class="list user-tasks-list">
+    <li class="item item-divider" ng-repeat-start="task in userTasks">{{task.name}}</li>
+    <li class="item" ng-repeat="timeSlotObj in task.timeSlotObjArr">{{timeSlotObj.date}} - {{timeSlotObj.timeSlot}}:00</li>
+    <div ng-repeat-end=""></div>
+</div>

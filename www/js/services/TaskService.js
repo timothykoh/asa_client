@@ -42,6 +42,26 @@ app.factory("TaskService", ["$rootScope", "$http", function($rootScope, $http){
             });
         };
 
+        this.getUserTasksForEvent = function(eventId){
+            return new Promise(function(resolve, reject){
+                $http.get($rootScope.serverBaseUrl + "task/by_event/for_user", {
+                    params: {
+                        eventId: eventId
+                    }
+                }).success(function(res){
+                    if (res.status === "success"){
+                        resolve(res.results);
+                    } else{
+                        console.error(res.error);
+                        reject(res.error);
+                    }
+                }).error(function(err){
+                    console.error(err);
+                    reject(err);
+                });
+            });
+        };
+
         this.createTask = function(taskDetails, eventId){
             return new Promise(function(resolve, reject){
                 $http.post($rootScope.serverBaseUrl + "task/create", {

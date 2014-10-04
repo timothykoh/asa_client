@@ -327,3 +327,10 @@ input[type=date].pseudo-placeholder:hover::before{
     display: block;
     font-size: 13px;
 }
+
+.user-tasks-list{
+    max-height: 300px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border: 1px solid #ddd;
+}

@@ -9,9 +9,9 @@
                 <h2>{{name}}</h2>
                 <h3>{{date}}</h3>
                 <h3>{{location}}</h3>
-                <button ng-show="isGoing === undefined" class="button button-outline event-outline-btn" ng-click="updateUserAttendance(true)">Going</button>
-                <button ng-show="isGoing === undefined" class="button button-outline event-outline-btn" ng-click="updateUserAttendance(false)">Not Going</button>
-                <button ng-show="isGoing !== undefined" class="button button-outline event-outline-btn attendance-menu-btn icon-right ion-navicon" ng-click="openAttendanceMenu()">{{attendanceState}}<i class="button-separator"></i></button>
+                <button ng-show="isLoggedIn && isGoing === undefined" class="button button-outline event-outline-btn" ng-click="updateUserAttendance(true)">Going</button>
+                <button ng-show="isLoggedIn && isGoing === undefined" class="button button-outline event-outline-btn" ng-click="updateUserAttendance(false)">Not Going</button>
+                <button ng-show="isLoggedIn && isGoing !== undefined" class="button button-outline event-outline-btn attendance-menu-btn icon-right ion-navicon" ng-click="openAttendanceMenu()">{{attendanceState}}<i class="button-separator"></i></button>
             </div>
         </div>
         <div class="card" ng-show="goingArr.length > 0">
@@ -47,7 +47,8 @@
         <div ng-if="isAdmin === true" class="card">
             <div class="item item-divider bar">
                 <div class="title">Finances</div>
-                <button class="button" ng-click="showExpensePopup()">Add Expense</button>
+                <!-- <button class="button" ng-click="showExpensePopup()">Add Expense</button> -->
+                <i ng-click="openFinanceMenu()" class="button button-clear icon-right ion-navicon"></i>
             </div>
             <ion-list can-swipe="true">
                 <ion-item ng-repeat="expense in expenses">
@@ -61,7 +62,8 @@
         <div ng-if="isAdmin === true" class="card">
             <div class="item item-divider bar">
                 <span class="title">Tasks</span>
-                <a href="#/event/add-task" class="button">Add Task</a>
+                <i ng-click="openTaskMenu()" class="button button-clear icon-right ion-navicon"></i>
+                <!-- <a href="#/event/add-task" class="button">Add Task</a> -->
             </div>
                 <ion-list can-swipe="true">
                 <ion-item ng-click="selectTask($index)" ng-repeat="task in tasks">

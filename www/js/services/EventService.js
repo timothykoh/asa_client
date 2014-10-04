@@ -118,7 +118,7 @@ app.factory("EventService", ["$rootScope", "$http", function($rootScope, $http){
                     reject(err);
                 });
             });
-        };
+        }; 
 
         this.getUserAttendance = function(eventId){
             return new Promise(function(resolve, reject){

@@ -47,9 +47,7 @@ app.factory("AuthService", ["$rootScope", "$http", "FacebookService", function($
                 $http.post($rootScope.serverBaseUrl + "auth/logout")
                 .success(function(res){
                     if (res.status === "success"){
-                        _userObjPromise = new Promise(function(resolve, reject){
-                            resolve(undefined);
-                        });
+                        _userObjPromise = undefined;
                         resolve();
                     } else{
                         console.error(res.error);

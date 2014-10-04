@@ -20,6 +20,7 @@ app.controller("EventCtrl",
             var eventImagePromise = EventService.getEventImageSrc($scope.event_id);
             var allAttendancePromise = EventService.getAllAttendance($scope.event_id);
 
+
             return Promise.all([eventImagePromise, allAttendancePromise]).then(function(values){
                 $scope.$apply(function(){
                     $scope.imgSrc = values[0];
@@ -31,29 +32,34 @@ app.controller("EventCtrl",
                     $scope.$apply(function(){
                         $scope.isAdmin = userObj.is_admin;
                         $scope.userObj = userObj;
+                        $scope.isLoggedIn = true;
                     });
-
-                    if (!userObj.is_admin){
-                        return;
-                    }
-                    var taskPromise = TaskService.getTasksForEvent(eventId);
-                    var expensePromise = ExpenseService.getExpensesForEvent(eventId);
-                    var userAttendancePromise = EventService.getUserAttendance(eventId);
-                    return Promise.all([taskPromise, expensePromise, userAttendancePromise]).
-                    then(function(values){
+                    TaskService.getUserTasksForEvent($scope.event_id)
+                    .then(function(userTasks){
                         $scope.$apply(function(){
-                            $scope.tasks = values[0];
-                            $scope.expenses = values[1];
-                            $scope.isGoing = values[2];
-                            if ($scope.isGoing){
-                                $scope.attendanceState = "Going";
-                            } else{
-                                $scope.attendanceState = "Not Going";
-                            }
+                            $scope.userTasks = userTasks;
                         });
-                    }, function(err){
-                        console.error(err);
                     });
+                    if (userObj.is_admin){
+                        var taskPromise = TaskService.getTasksForEvent(eventId);
+                        var expensePromise = ExpenseService.getExpensesForEvent(eventId);
+                        var userAttendancePromise = EventService.getUserAttendance(eventId);
+                        return Promise.all([taskPromise, expensePromise, userAttendancePromise]).
+                        then(function(values){
+                            $scope.$apply(function(){
+                                $scope.tasks = values[0];
+                                $scope.expenses = values[1];
+                                $scope.isGoing = values[2];
+                                if ($scope.isGoing){
+                                    $scope.attendanceState = "Going";
+                                } else{
+                                    $scope.attendanceState = "Not Going";
+                                }
+                            });
+                        }, function(err){
+                            console.error(err);
+                        });
+                    }
                 });
             });
         };
@@ -115,54 +121,6 @@ app.controller("EventCtrl",
             TaskService.updateCurrentTask($scope.tasks[idx]);
             $state.go("event-task");
             return;
-        };
-
-        $scope.showExpensePopup = function(){
-            $ionicPopup.show({
-                title: "Expense Details",
-                templateUrl: "popups/add-expense-popup.html",
-                scope: $scope,
-                buttons: [
-                    {
-                        text: "Cancel",
-                        onTap: function(e){
-                            $scope.expense = {};
-                        }
-                    },
-                    {
-                        text: "Add",
-                        type: "button-positive",
-                        onTap: function(e){
-                            if ($scope.expense.name === undefined || $scope.expense.amount === undefined){
-                                e.preventDefault();
-                            } else{
-                                var expenseObj = {
-                                    name: $scope.expense.name,
-                                    description: $scope.expense.description,
-                                    amount: $scope.expense.amount
-                                };
-                                $scope.expense = {};
-
-                                console.log(expenseObj);
-                                ExpenseService.createExpense(expenseObj, $scope.event_id)
-                                .then(function(createdExpenseObj){
-                                    $scope.expenses.push(createdExpenseObj);
-                                    console.log("Expense added");
-                                }, function(){
-                                    $ionicPopup.show({
-                                        title: "<span class='red-text'>Failed to add expense.</span>",
-                                        buttons: [
-                                            {
-                                                text: "Okay"
-                                            }
-                                        ]
-                                    });
-                                });
-                            }
-                        }
-                    }
-                ]
-            })
         };
 
         $scope.refresh = function(){
@@ -274,14 +232,112 @@ app.controller("EventCtrl",
 
                 },
                 buttonClicked: function(index){
-                    if (index === 0){
+                    if (index === 0 && !$scope.isGoing){
                         $scope.updateUserAttendance(true);
-                    } else if(index === 1){
+                    } else if(index === 1 && $scope.isGoing){
                         $scope.updateUserAttendance(false);
                     }
                     return true;
                 }
             });
+        };
+
+        function openUserTasksPopup(){
+            $ionicPopup.show({
+                title: "My Tasks",
+                templateUrl: "popups/user-tasks-popup.html",
+                scope: $scope,
+                buttons: [
+                    {text: "Okay"}
+                ]
+            });
+        }
+
+        $scope.openTaskMenu = function(){
+            $ionicActionSheet.show({
+                buttons: [
+                    {text: "Add Task"},
+                    {text: "My Tasks"}
+                ],
+                cancelText: "<span class='assertive'/>Cancel</span>",
+                cancel: function(){
+
+                },
+                buttonClicked: function(index){
+                    if (index === 0){
+                        $state.go("event-add-task");
+                    } else if (index === 1){
+                        openUserTasksPopup();
+                    }
+                    return true;
+                }
+            });
+        };
+
+        function showExpensePopup(){
+            $ionicPopup.show({
+                title: "Expense Details",
+                templateUrl: "popups/add-expense-popup.html",
+                scope: $scope,
+                buttons: [
+                    {
+                        text: "Cancel",
+                        onTap: function(e){
+                            $scope.expense = {};
+                        }
+                    },
+                    {
+                        text: "Add",
+                        type: "button-positive",
+                        onTap: function(e){
+                            if ($scope.expense.name === undefined || $scope.expense.amount === undefined){
+                                e.preventDefault();
+                            } else{
+                                var expenseObj = {
+                                    name: $scope.expense.name,
+                                    description: $scope.expense.description,
+                                    amount: $scope.expense.amount
+                                };
+                                $scope.expense = {};
+
+                                console.log(expenseObj);
+                                ExpenseService.createExpense(expenseObj, $scope.event_id)
+                                .then(function(createdExpenseObj){
+                                    $scope.expenses.push(createdExpenseObj);
+                                    console.log("Expense added");
+                                }, function(){
+                                    $ionicPopup.show({
+                                        title: "<span class='red-text'>Failed to add expense.</span>",
+                                        buttons: [
+                                            {
+                                                text: "Okay"
+                                            }
+                                        ]
+                                    });
+                                });
+                            }
+                        }
+                    }
+                ]
+            })
+        };
+        
+        $scope.openFinanceMenu = function(){
+            $ionicActionSheet.show({
+                buttons: [
+                    {text: "Add Expense"}
+                ],
+                cancelText: "<span class='assertive'/>Cancel</span>",
+                cancel: function(){
+
+                },
+                buttonClicked: function(index){
+                    if (index === 0){
+                        showExpensePopup();
+                    }
+                    return true;
+                }
+            })
         }
 
 }]);
