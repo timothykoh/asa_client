@@ -17,37 +17,46 @@ app.controller("EventCtrl",
              $ionicPopup,
              $ionicActionSheet){
         function updateEventDetails(eventId, $scope, AuthService, TaskService, ExpenseService, EventService){
-            return AuthService.getUser().then(function(userObj){
-                $scope.$apply(function(){
-                    $scope.isAdmin = userObj.is_admin;
-                });
+            var eventImagePromise = EventService.getEventImageSrc($scope.event_id);
+            var allAttendancePromise = EventService.getAllAttendance($scope.event_id);
 
-                if (!userObj.is_admin){
-                    return;
-                }
-                var taskPromise = TaskService.getTasksForEvent(eventId);
-                var expensePromise = ExpenseService.getExpensesForEvent(eventId);
-                var attendancePromise = EventService.getAttendance(eventId);
-                console.log("HE");
-                return Promise.all([taskPromise, expensePromise, attendancePromise]).
-                then(function(values){
-                    console.log("DONE");
+            return Promise.all([eventImagePromise, allAttendancePromise]).then(function(values){
+                $scope.$apply(function(){
+                    $scope.imgSrc = values[0];
+                    var attendanceObj = values[1];
+                    $scope.goingArr = attendanceObj.goingArr;
+                    // $scope.notGoingArr = attendanceObj.notGoingArr;
+                });
+                return AuthService.getUser().then(function(userObj){
                     $scope.$apply(function(){
-                        $scope.tasks = values[0];
-                        $scope.expenses = values[1];
-                        $scope.isGoing = values[2];
-                        console.log(values);
-                        if ($scope.isGoing){
-                            $scope.attendanceState = "Going";
-                        } else{
-                            $scope.attendanceState = "Not Going";
-                        }
+                        $scope.isAdmin = userObj.is_admin;
+                        $scope.userObj = userObj;
                     });
-                }, function(err){
-                    console.error(err);
+
+                    if (!userObj.is_admin){
+                        return;
+                    }
+                    var taskPromise = TaskService.getTasksForEvent(eventId);
+                    var expensePromise = ExpenseService.getExpensesForEvent(eventId);
+                    var userAttendancePromise = EventService.getUserAttendance(eventId);
+                    return Promise.all([taskPromise, expensePromise, userAttendancePromise]).
+                    then(function(values){
+                        $scope.$apply(function(){
+                            $scope.tasks = values[0];
+                            $scope.expenses = values[1];
+                            $scope.isGoing = values[2];
+                            if ($scope.isGoing){
+                                $scope.attendanceState = "Going";
+                            } else{
+                                $scope.attendanceState = "Not Going";
+                            }
+                        });
+                    }, function(err){
+                        console.error(err);
+                    });
                 });
             });
-        }
+        };
 
         var eventObj = EventService.getCurrentEvent();
         if (eventObj === undefined){
@@ -73,12 +82,7 @@ app.controller("EventCtrl",
             budget: parseInt($scope.budget)
         };
 
-        EventService.getEventImageSrc(eventObj.event_id)
-        .then(function(imgSrc){
-            $scope.$apply(function(){
-                $scope.imgSrc = imgSrc;
-            });
-        });
+        
 
         updateEventDetails($scope.event_id, $scope, AuthService, TaskService, ExpenseService, EventService);
 
@@ -220,15 +224,35 @@ app.controller("EventCtrl",
             }
         };
 
-        $scope.updateAttendance = function(isGoing){
-            EventService.updateAttendance($scope.event_id, isGoing)
+        function removeSelfFromGoingArr(goingArr){
+            for (var i = 0; i < $scope.goingArr.length; i++){
+                if (goingArr[i].user_id === $scope.userObj.user_id){
+                    goingArr.splice(i,1);
+                }
+            }
+        };
+
+        function addSelfToGoingArr(goingArr){
+            console.log($scope);
+            goingArr.unshift({
+                user_id: $scope.userObj.user_id,
+                name: $scope.userObj.name,
+                fb_id: $scope.userObj.fb_id,
+                is_going: true
+            });
+        };
+
+        $scope.updateUserAttendance = function(isGoing){
+            EventService.updateUserAttendance($scope.event_id, isGoing)
             .then(function(){
                 $scope.$apply(function(){
                     $scope.isGoing = isGoing;
                     if ($scope.isGoing){
                         $scope.attendanceState = "Going";
+                        addSelfToGoingArr($scope.goingArr);
                     } else{
                         $scope.attendanceState = "Not Going";
+                        removeSelfFromGoingArr($scope.goingArr);
                     }
                 });
             }, function(){
@@ -251,9 +275,9 @@ app.controller("EventCtrl",
                 },
                 buttonClicked: function(index){
                     if (index === 0){
-                        $scope.updateAttendance(true);
+                        $scope.updateUserAttendance(true);
                     } else if(index === 1){
-                        $scope.updateAttendance(false);
+                        $scope.updateUserAttendance(false);
                     }
                     return true;
                 }

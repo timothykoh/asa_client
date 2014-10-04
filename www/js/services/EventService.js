@@ -102,7 +102,7 @@ app.factory("EventService", ["$rootScope", "$http", function($rootScope, $http){
             });
         };
 
-        this.updateAttendance = function(eventId, isGoing){
+        this.updateUserAttendance = function(eventId, isGoing){
             return new Promise(function(resolve, reject){
                 $http.post($rootScope.serverBaseUrl + "event/attendance", {
                     eventId: eventId,
@@ -120,7 +120,7 @@ app.factory("EventService", ["$rootScope", "$http", function($rootScope, $http){
             });
         };
 
-        this.getAttendance = function(eventId){
+        this.getUserAttendance = function(eventId){
             return new Promise(function(resolve, reject){
                 $http.get($rootScope.serverBaseUrl + "event/attendance", {
                     params: {
@@ -138,7 +138,27 @@ app.factory("EventService", ["$rootScope", "$http", function($rootScope, $http){
                     reject(err);
                 });
             });
-        }
+        };
+
+        this.getAllAttendance = function(eventId){
+            return new Promise(function(resolve, reject){
+                $http.get($rootScope.serverBaseUrl + "event/attendance/all", {
+                    params: {
+                        eventId: eventId
+                    }
+                }).success(function(res){
+                    if (res.status === "success"){
+                        resolve(res.results);
+                    } else{
+                        console.error(res.error);
+                        reject(res.error);
+                    }
+                }).error(function(err){
+                    console.error(err);
+                    reject(err);
+                });
+            });  
+        };
     };
 
     return new EventService();

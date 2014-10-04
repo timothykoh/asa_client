@@ -9,9 +9,19 @@
                 <h2>{{name}}</h2>
                 <h3>{{date}}</h3>
                 <h3>{{location}}</h3>
-                <button ng-show="isGoing === undefined" class="button button-outline event-outline-btn" ng-click="updateAttendance(true)">Going</button>
-                <button ng-show="isGoing === undefined" class="button button-outline event-outline-btn" ng-click="updateAttendance(false)">Not Going</button>
+                <button ng-show="isGoing === undefined" class="button button-outline event-outline-btn" ng-click="updateUserAttendance(true)">Going</button>
+                <button ng-show="isGoing === undefined" class="button button-outline event-outline-btn" ng-click="updateUserAttendance(false)">Not Going</button>
                 <button ng-show="isGoing !== undefined" class="button button-outline event-outline-btn attendance-menu-btn icon-right ion-navicon" ng-click="openAttendanceMenu()">{{attendanceState}}<i class="button-separator"></i></button>
+            </div>
+        </div>
+        <div class="card" ng-show="goingArr.length > 0">
+            <div class="item">
+                <div class="event-attendee-pics">
+                    <img ng-repeat="goingUser in goingArr | limitTo: 6" ng-src="http://graph.facebook.com/{{goingUser.fb_id}}/picture?height=40&width=40" width="40"  height="40" />
+                </div>
+                <span>{{goingArr.length}}</span>
+                <span ng-show="goingArr.length == 1">person is going</span>
+                <span ng-show="goingArr.length > 1">people are going</span>
             </div>
         </div>
         <div class="card">

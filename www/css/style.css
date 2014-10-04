@@ -316,3 +316,14 @@ input[type=date].pseudo-placeholder:hover::before{
     border-left: 1px solid #b2b2b2;
     float: right;
 }
+
+.event-attendee-pics{
+    display: block;
+}
+    .event-attendee-pics img{
+        margin-right: 5px;
+    }
+.event-attendee-str{
+    display: block;
+    font-size: 13px;
+}
