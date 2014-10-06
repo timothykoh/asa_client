@@ -4,17 +4,18 @@ app.controller("NewsCtrl",
         function updateNews(){
             var userPromise = AuthService.getUser();
             var newsPromise = NewsService.getNews();
-
-            return Promise.all([userPromise, newsPromise]).then(function(values){
+            return NewsService.getNews().then(function(newsObjArr){
                 $scope.$apply(function(){
-                    var userObj = values[0];
-                    if (userObj !== undefined){
-                        $scope.isLoggedIn = true;
-                    }
-                    $scope.newsList = values[1];
+                    $scope.newsList = newsObjArr;
+                });
+                AuthService.getUser().then(function(userObj){
+                    $scope.$apply(function(){
+                        if (userObj !== undefined){
+                            $scope.isLoggedIn = true;
+                        }
+                    });
                 });
             });
-            
         }
 
         $ionicLoading.show({

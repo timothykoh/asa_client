@@ -4,15 +4,17 @@ app.controller("EventListCtrl",
         function updateEventList(){
             var eventPromise = EventService.getEvents();
             var userPromise = AuthService.getUser();
-
-            return Promise.all([eventPromise, userPromise]).then(function(values){
+            return EventService.getEvents().then(function(eventObjArr){
                 $scope.$apply(function(){
-                    $scope.events = values[0];
-                    var userObj = values[1];
-                    if (userObj !== undefined){
-                        $scope.isLoggedIn = true;
-                        $scope.isAdmin = userObj.is_admin;
-                    }
+                    $scope.events = eventObjArr;
+                });
+                AuthService.getUser().then(function(userObj){
+                    $scope.$apply(function(){
+                        if (userObj !== undefined){
+                            $scope.isLoggedIn = true;
+                            $scope.isAdmin = userObj.is_admin;
+                        }
+                    });
                 });
             });
         }
