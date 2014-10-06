@@ -1,6 +1,6 @@
 app.controller("EventListCtrl",
-    ["$scope", "EventService", "AuthService", "$state", "$ionicLoading",
-    function($scope, EventService, AuthService, $state, $ionicLoading){
+    ["$scope", "EventService", "AuthService", "$state", "$ionicLoading", "$location",
+    function($scope, EventService, AuthService, $state, $ionicLoading, $location){
         function updateEventList(){
             var eventPromise = EventService.getEvents();
             var userPromise = AuthService.getUser();
@@ -31,7 +31,7 @@ app.controller("EventListCtrl",
         
         $scope.viewEvent = function(idx){
             EventService.updateCurrentEvent($scope.events[idx]);
-            $state.go("event");
+            $location.url("event?id=" + $scope.events[idx].event_id);
         };
 
         $scope.refresh = function(){

@@ -8,6 +8,7 @@ app.controller("EventCtrl",
      "$state",
      "$ionicPopup",
      "$ionicActionSheet",
+     "$location",
     function($scope,
              EventService,
              AuthService,
@@ -15,8 +16,28 @@ app.controller("EventCtrl",
              ExpenseService,
              $state,
              $ionicPopup,
-             $ionicActionSheet){
-        function updateEventDetails(eventId, $scope, AuthService, TaskService, ExpenseService, EventService){
+             $ionicActionSheet,
+             $location){
+        function updateEventDetails(eventObj){
+            $scope.event_id = eventObj.event_id;
+            $scope.name = eventObj.name;
+            $scope.description = eventObj.description;
+            $scope.date = eventObj.date;
+            $scope.location = eventObj.location;
+            $scope.budget = eventObj.budget;
+
+
+            $scope.task = {}; //used for adding new tasks
+            $scope.expense = {}; //used for adding new expenses
+
+            $scope.tasks = [];
+            $scope.expenses = [];
+
+            $scope.editForm = {
+                description: $scope.description,
+                budget: parseInt($scope.budget)
+            };
+
             var eventImagePromise = EventService.getEventImageSrc($scope.event_id);
             var allAttendancePromise = EventService.getAllAttendance($scope.event_id);
 
@@ -41,9 +62,9 @@ app.controller("EventCtrl",
                         });
                     });
                     if (userObj.is_admin){
-                        var taskPromise = TaskService.getTasksForEvent(eventId);
-                        var expensePromise = ExpenseService.getExpensesForEvent(eventId);
-                        var userAttendancePromise = EventService.getUserAttendance(eventId);
+                        var taskPromise = TaskService.getTasksForEvent($scope.event_id);
+                        var expensePromise = ExpenseService.getExpensesForEvent($scope.event_id);
+                        var userAttendancePromise = EventService.getUserAttendance($scope.event_id);
                         return Promise.all([taskPromise, expensePromise, userAttendancePromise]).
                         then(function(values){
                             $scope.$apply(function(){
@@ -63,35 +84,21 @@ app.controller("EventCtrl",
                 });
             });
         };
-
-        var eventObj = EventService.getCurrentEvent();
-        if (eventObj === undefined){
-            $state.go("event-list");
-            return;
+        $scope.eventObj = EventService.getCurrentEvent();
+        if ($scope.eventObj !== undefined){
+            updateEventDetails($scope.eventObj);
+        } else{
+            var eventId = $location.search().id;
+            EventService.getEvent(eventId).then(function(eventObj){
+                $scope.eventObj = eventObj;
+                EventService.updateCurrentEvent(eventObj);
+                updateEventDetails(eventObj);
+            }, function(){
+                $state.go("event-list");
+            });
+            
         }
-        $scope.event_id = eventObj.event_id;
-        $scope.name = eventObj.name;
-        $scope.description = eventObj.description;
-        $scope.date = eventObj.date;
-        $scope.location = eventObj.location;
-        $scope.budget = eventObj.budget;
-
-
-        $scope.task = {}; //used for adding new tasks
-        $scope.expense = {}; //used for adding new expenses
-
-        $scope.tasks = [];
-        $scope.expenses = [];
-
-        $scope.editForm = {
-            description: $scope.description,
-            budget: parseInt($scope.budget)
-        };
-
         
-
-        updateEventDetails($scope.event_id, $scope, AuthService, TaskService, ExpenseService, EventService);
-
         $scope.deleteTask = function(idx){
             var task = $scope.tasks[idx];
             TaskService.deleteTask(task.taskId)
@@ -124,7 +131,7 @@ app.controller("EventCtrl",
         };
 
         $scope.refresh = function(){
-            updateEventDetails($scope.event_id, $scope, AuthService, TaskService, ExpenseService, EventService)
+            updateEventDetails($scope.eventObj)
             .then(function(){
                 $scope.$broadcast('scroll.refreshComplete');
             }, function(){

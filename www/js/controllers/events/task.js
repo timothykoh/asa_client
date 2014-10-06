@@ -1,6 +1,18 @@
 app.controller("TaskCtrl",
-    ["$scope", "TaskService", "AuthService", "$state", "$ionicPopup",
-    function($scope, TaskService, AuthService, $state, $ionicPopup){
+    ["$scope",
+     "TaskService",
+     "AuthService",
+     "EventService",
+     "$state",
+     "$ionicPopup",
+     "$location",
+    function($scope,
+             TaskService,
+             AuthService,
+             EventService,
+             $state,
+             $ionicPopup,
+             $location){
         function addSelfToAssigneeArr(assigneeArr, userId, name, fbId){
             assigneeArr.unshift({
                 userId: userId,
@@ -153,6 +165,15 @@ app.controller("TaskCtrl",
                     type: "button-default"
                 }]
             });
-        }
+        };
+
+        $scope.back = function(){
+            var eventObj = EventService.getCurrentEvent();
+            if (eventObj !== undefined){
+                $location.url("event?id=" + eventObj.event_id);
+            } else{
+                $state.go("event");
+            }
+        };
     }
 ]);

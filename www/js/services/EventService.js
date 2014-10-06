@@ -20,9 +20,33 @@ app.factory("EventService", ["$rootScope", "$http", function($rootScope, $http){
             });
         };
 
+        this.getEvent = function(eventId){
+            return new Promise(function(resolve, reject){
+                console.log("getting");
+                $http.get($rootScope.serverBaseUrl + "event", {
+                    params: {
+                        eventId: eventId
+                    }
+                })
+                .success(function(res){
+                console.log("success");
+                    if (res.status === "success"){
+                        resolve(res.results);
+                    } else{
+                        console.error(res.error);
+                        reject(res.error);
+                    }
+                }).error(function(err){
+                    console.log("fail");
+                    console.error(err);
+                    reject(err);
+                });
+            });
+        };
+
         this.getEvents = function(){
             return new Promise(function(resolve, reject){
-                $http.get($rootScope.serverBaseUrl + "event")
+                $http.get($rootScope.serverBaseUrl + "event/all")
                 .success(function(res){
                     if (res.status === "success"){
                         resolve(res.results);
