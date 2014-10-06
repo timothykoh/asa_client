@@ -19,8 +19,8 @@ app.factory("ImageService", function(){
             return new Promise(function(resolve, reject){
                 var reader = new FileReader();
                 reader.onload = function(e){
-                    var binFile = new BinaryFile(e.target.result);
-                    var exif = EXIF.readFromBinaryFile(binFile);
+                    // var binFile = new BinaryFile(e.target.result);
+                    var exif = EXIF.readFromBinaryFile(e.target.result);
                     var mpImg = new MegaPixImage(imgFile);
                     var img = new Image();
                     mpImg.render(img, {
@@ -32,7 +32,8 @@ app.factory("ImageService", function(){
                         resolve(img.src);
                     };
                 };
-                reader.readAsBinaryString(imgFile);
+                // reader.readAsBinaryString(imgFile);
+                reader.readAsArrayBuffer(imgFile);
             });
         };
     }

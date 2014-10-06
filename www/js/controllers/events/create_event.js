@@ -13,15 +13,23 @@ app.controller("CreateEventCtrl",
         $scope.imgData = undefined;
 
         $scope.create = function(e){
-            console.log($scope.eventForm.budget);
             if ($scope.eventForm.name === "" ||
                 $scope.eventForm.description === "" ||
                 $scope.eventForm.date === "" ||
                 $scope.eventForm.location === "" ||
-                $scope.eventForm.budget === "" ||
                 $scope.imgData === undefined){
                 $ionicPopup.show({
-                    title: "<span class='red-text'>All fields are required.</span>",
+                    title: "<span class='red-text'>All fields are required</span>",
+                    buttons: [
+                        {
+                            text: "Okay"
+                        }
+                    ]
+                });
+                return;
+            } else if ($scope.eventForm.budget === "" || $scope.eventForm.budget === null){
+                $ionicPopup.show({
+                    title: "<span class='red-text'>Budget has to be a number</span>",
                     buttons: [
                         {
                             text: "Okay"
