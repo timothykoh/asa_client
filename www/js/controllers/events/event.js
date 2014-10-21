@@ -277,7 +277,7 @@ app.controller("EventCtrl",
                 },
                 buttonClicked: function(index){
                     if (index === 0){
-                        $state.go("event-add-task");
+                        $location.url("event/add-task?id=" + $scope.event_id);
                     } else if (index === 1){
                         openUserTasksPopup();
                     }

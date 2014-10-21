@@ -1,7 +1,19 @@
 
 app.controller("EventAddTaskCtrl",
-    ["$scope", "TaskService", "EventService", "$ionicPopup", "$state", "$ionicGesture",
-    function($scope, TaskService, EventService, $ionicPopup, $state, $ionicGesture){
+    ["$scope",
+     "TaskService",
+     "EventService",
+     "$ionicPopup",
+     "$state",
+     "$ionicGesture",
+     "$location",
+    function($scope,
+             TaskService,
+             EventService,
+             $ionicPopup,
+             $state,
+             $ionicGesture,
+             $location){
         function getDateArr(startDateObj, n){
             var dateArr = [];
             var secsInDay = 86400000;
@@ -27,10 +39,21 @@ app.controller("EventAddTaskCtrl",
             return timeSlotArr;
         }
 
-        var eventObj = EventService.getCurrentEvent();
-        if (eventObj === undefined){
-            $state.go("event-list");
+        $scope.eventObj = EventService.getCurrentEvent();
+        if ($scope.eventObj === undefined){
+            var eventId = $location.search().id;
+            if (eventId === undefined){
+                $state.go("event-list");
+                return;
+            }
+            EventService.getEvent(eventId).then(function(eventObj){
+                $scope.eventObj = eventObj;
+                EventService.updateCurrentEvent(eventObj);
+            }, function(){
+                $state.go("event-list");
+            });
         }
+
         var TIME_START = 0;
         var TIME_END = 23;
         var TIMESLOT_DURATION = 30;
@@ -87,8 +110,7 @@ app.controller("EventAddTaskCtrl",
         };
         
         $scope.add = function(){
-            var eventObj = EventService.getCurrentEvent();
-            if (eventObj === undefined){
+            if ($scope.eventObj === undefined){
                 $ionicPopup.alert({
                     template: "No event associated with this task. Select the event before adding the task.",
                     okType: "button"
@@ -106,13 +128,13 @@ app.controller("EventAddTaskCtrl",
                 name: $scope.taskForm.name,
                 timeSlotMap: $scope.timeSlotMap
             };
-            TaskService.createTask(taskDetails, eventObj.event_id)
+            TaskService.createTask(taskDetails, $scope.eventObj.event_id)
             .then(function(){
                 $ionicPopup.alert({
                     title: "Task Created",
                     okType: "button"
                 }).then(function(){
-                    $state.go("event");
+                    $location.url("event?id=" + $scope.eventObj.event_id);
                 });
             }, function(err){
                 $ionicPopup.alert({
@@ -121,6 +143,14 @@ app.controller("EventAddTaskCtrl",
                 });
             });
         };
+
+        $scope.back = function(){
+            if ($scope.eventObj !== undefined){
+                $location.url("event?id=" + $scope.eventObj.event_id);
+            } else{
+                $scope.go("event-list");
+            }
+        }
         
         // $ionicGesture.on('hold', function(event){
         //     var path = event.path;
