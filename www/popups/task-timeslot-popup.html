@@ -1,10 +1,12 @@
-<div style="text-align:center;">
-    <button ng-click="setNumPeople(0)" class="button">0</button>
-    <button ng-click="setNumPeople(1)" class="button">1</button>
-    <button ng-click="setNumPeople(2)" class="button">2</button>
-    <button ng-click="setNumPeople(3)" class="button">3</button>
+<div class="timeslot-popup">
+    <div class="btn-row">
+        <button ng-click="setNumPeople(0)" class="button">0</button>
+        <button ng-click="setNumPeople(1)" class="button">1</button>
+        <button ng-click="setNumPeople(2)" class="button">2</button>
+        <button ng-click="setNumPeople(3)" class="button">3</button>
+    </div>
+    <label style="margin-top: 15px" class="item item-input">
+        <input ng-model="otherNum" type="number" placeholder="Other">
+    </label>
+    <button ng-click="setNumPeople(otherNum)" class="btm-btn button button-block">Select Other</button>
 </div>
-<label style="margin-top: 15px" class="item item-input">
-    <input ng-model="otherNum" type="number" placeholder="Other">
-</label>
-<button ng-click="setNumPeople(otherNum)" style="margin-top: 8px; margin-bottom: -10px;" class="button button-block">Select Other</button>

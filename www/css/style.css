@@ -355,3 +355,13 @@ input[type=date].pseudo-placeholder:hover::before{
         line-height: 40px;
         margin-left: 5px;
     }
+
+.timeslot-popup{
+    overflow: hidden;
+}
+    .timeslot-popup .btn-row{
+        text-align: center;
+    }
+    .timeslot-popup .btm-btn{
+        margin-top: 10px;
+    }
