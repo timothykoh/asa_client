@@ -1,7 +1,7 @@
 
 app.controller("EventAddTaskCtrl",
-    ["$scope", "TaskService", "EventService", "$ionicPopup", "$state",
-    function($scope, TaskService, EventService, $ionicPopup, $state){
+    ["$scope", "TaskService", "EventService", "$ionicPopup", "$state", "$ionicGesture",
+    function($scope, TaskService, EventService, $ionicPopup, $state, $ionicGesture){
         function getDateArr(startDateObj, n){
             var dateArr = [];
             var secsInDay = 86400000;
@@ -69,7 +69,13 @@ app.controller("EventAddTaskCtrl",
                        "<span class='red-text'>" + date + "</span> at " +
                        "<span class='red-text'>" + timeSlot + "</span>?",
                 templateUrl: "popups/task-timeslot-popup.html",
-                scope: $scope
+                scope: $scope,
+                buttons: [
+                    {
+                        text: "Cancel",
+                        type: "button-positive"
+                    }
+                ]
             });
             $scope.setNumPeople = function(numPeople){
                 if (numPeople === undefined || numPeople === null){
@@ -114,5 +120,13 @@ app.controller("EventAddTaskCtrl",
                     okType: "button"
                 });
             });
-    }
+        };
+        
+        // $ionicGesture.on('hold', function(event){
+        //     var path = event.path;
+        //     for (var i = 0; i < path.length; i++){
+        //         console.log(path[i]);
+        //     }
+        //     console.log(event.srcElement);
+        // }, angular.element(".task-calendar"));
 }]);

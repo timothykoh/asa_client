@@ -31,8 +31,10 @@ app.controller("TaskCtrl",
             }
         }
 
-        function updateTask($scope, taskObj){
+        function updateTask(taskObj){
             $scope.name = taskObj.name;
+            $scope.taskId = taskObj.taskId;
+
             var months = ["January","February","March","April","May","June","July",
                           "August", "September", "October", "November", "December"];
             var dateTaskObjArr = taskObj.timeSlotObjArr.map(function(elem){
@@ -81,12 +83,24 @@ app.controller("TaskCtrl",
         }
 
         var taskObj = TaskService.getCurrentTask();
-        if (taskObj === undefined){
-            $state.go("event-list");
-            return;
+        if (taskObj !== undefined){
+            updateTask(taskObj);
+        } else{
+            var taskId = $location.search().tid;
+            if (taskId === undefined){
+                $state.go("event-list");
+                return;
+            }
+            TaskService.getTask(taskId).then(function(taskObj){
+                TaskService.updateCurrentTask(taskObj);
+                $scope.$apply(function(){
+                    updateTask(taskObj);
+                });
+            }, function(){
+                $state.go("event-list");
+            });
         }
-        var taskId = taskObj.taskId;
-        updateTask($scope, taskObj);
+        
 
         $scope.timeSlotSignUp = function(timeSlotId, dateTaskObjIdx, timeSlotObjIdx){
             TaskService.timeSlotSignUp(timeSlotId)
@@ -135,9 +149,9 @@ app.controller("TaskCtrl",
         };
 
         $scope.refresh = function(){
-            TaskService.getTask(taskId).then(function(taskObj){
+            TaskService.getTask($scope.taskId).then(function(taskObj){
                 $scope.$apply(function(){
-                    updateTask($scope, taskObj);
+                    updateTask(taskObj);
                 });
                 $scope.$broadcast('scroll.refreshComplete');
             });
@@ -172,7 +186,12 @@ app.controller("TaskCtrl",
             if (eventObj !== undefined){
                 $location.url("event?id=" + eventObj.event_id);
             } else{
-                $state.go("event");
+                var eventId = $location.search().eid;
+                if (eventId !== undefined){
+                    $location.url("event?id=" + eventId);
+                } else{
+                    $state.go("event");
+                }
             }
         };
     }

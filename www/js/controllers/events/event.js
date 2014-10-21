@@ -85,10 +85,15 @@ app.controller("EventCtrl",
             });
         };
         $scope.eventObj = EventService.getCurrentEvent();
+
         if ($scope.eventObj !== undefined){
             updateEventDetails($scope.eventObj);
         } else{
             var eventId = $location.search().id;
+            if (eventId === undefined){
+                $state.go("event-list");
+                return;
+            }
             EventService.getEvent(eventId).then(function(eventObj){
                 $scope.eventObj = eventObj;
                 EventService.updateCurrentEvent(eventObj);
@@ -126,7 +131,7 @@ app.controller("EventCtrl",
         };
         $scope.selectTask = function(idx){
             TaskService.updateCurrentTask($scope.tasks[idx]);
-            $state.go("event-task");
+            $location.url("event/task?eid=" + $scope.event_id + "&tid=" + $scope.tasks[idx].taskId);
             return;
         };
 
