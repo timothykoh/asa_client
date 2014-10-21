@@ -7,7 +7,7 @@
         <ul ng-if="dateTaskObjArr.length > 0" class="list task-timeslot-list">
             <li class="item item-divider" ng-repeat-start="dateTaskObj in dateTaskObjArr">{{dateTaskObj.formattedDate}}</li>
             <li class="item" ng-repeat="timeSlotObj in dateTaskObj.timeSlotObjArr" ng-click="displaySignUps(timeSlotObj, dateTaskObj.formattedDate)">
-                <span class="time">{{timeSlotObj.timeSlot}}:00</span>
+                <span class="time">{{timeSlotObj.timeSlot}}</span>
                 <div class="assignee-region">
                     <img ng-repeat="assignee in timeSlotObj.assigneeArr" ng-src="http://graph.facebook.com/{{assignee.fbId}}/picture?height=25&width=25" width="25"  height="25" /><div class="small-dotted-box" ng-repeat="i in genBoxCollection(timeSlotObj.numPeople, timeSlotObj.numAssignees, 4) track by $index">{{$index + 1 + timeSlotObj.numAssignees}}</div>
                 </div><div ng-if="timeSlotObj.numPeople > 4" class="small-gray-box">+{{timeSlotObj.numPeople - 4}}</div>

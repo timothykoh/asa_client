@@ -13,10 +13,16 @@ app.controller("EventAddTaskCtrl",
             return dateArr;
         }
 
-        function genTimeslotArr(start, end){
-            var timeSlotArr = new Array(end - start + 1);
+        function genTimeslotArr(start, end, timeSlotDuration){
+            var timeSlotsPerHour = 60/timeSlotDuration;
+            var timeSlotArr = new Array((end - start + 1)*timeSlotsPerHour);
             for (var i = start; i <= end; i++){
-                timeSlotArr[i-start] = i;
+                for (var j = 0; j < timeSlotsPerHour; j++){
+                    var hour = i;
+                    var minutes = ("0" + j*timeSlotDuration).slice(-2);
+                    var timeSlot = hour + ":" + minutes;
+                    timeSlotArr[i*timeSlotsPerHour - start + j] = timeSlot;
+                }
             }
             return timeSlotArr;
         }
@@ -27,9 +33,10 @@ app.controller("EventAddTaskCtrl",
         }
         var TIME_START = 0;
         var TIME_END = 23;
+        var TIMESLOT_DURATION = 30;
         var COL_WIDTH = 105;
         var HDR_COL_WIDTH = 50;
-        $scope.timeSlots = genTimeslotArr(TIME_START, TIME_END);
+        $scope.timeSlots = genTimeslotArr(TIME_START, TIME_END, TIMESLOT_DURATION);
 
         $scope.taskForm = {
             name: "",
@@ -60,7 +67,7 @@ app.controller("EventAddTaskCtrl",
             timeSlotPopup = $ionicPopup.show({
                 title: "How many people are required for task on " +
                        "<span class='red-text'>" + date + "</span> at " +
-                       "<span class='red-text'>" + timeSlot + ":00</span>?",
+                       "<span class='red-text'>" + timeSlot + "</span>?",
                 templateUrl: "popups/task-timeslot-popup.html",
                 scope: $scope
             });

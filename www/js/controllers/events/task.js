@@ -157,7 +157,7 @@ app.controller("TaskCtrl",
             $scope.timeSlotDetails = timeSlotObj;
             var timeSlot = timeSlotObj.timeSlot;
             $ionicPopup.show({
-                title: dateStr + " - " + timeSlot + ":00",
+                title: dateStr + " - " + timeSlot,
                 templateUrl: "popups/task-signups-popup.html",
                 scope: $scope,
                 buttons: [{
