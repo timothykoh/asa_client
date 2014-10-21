@@ -47,7 +47,9 @@ app.controller("EventAddTaskCtrl",
                 return;
             }
             EventService.getEvent(eventId).then(function(eventObj){
-                $scope.eventObj = eventObj;
+                $scope.$apply(function(){
+                    $scope.eventObj = eventObj;
+                });
                 EventService.updateCurrentEvent(eventObj);
             }, function(){
                 $state.go("event-list");
@@ -108,6 +110,14 @@ app.controller("EventAddTaskCtrl",
                 timeSlotPopup.close();
             };
         };
+
+        $scope.cellClicked = function(date,timeSlot){
+            var oldVal = $scope.timeSlotMap[date][timeSlot];
+            if (oldVal === undefined){
+                oldVal = 0;
+            }
+            $scope.timeSlotMap[date][timeSlot] = oldVal + 1;
+        }
         
         $scope.add = function(){
             if ($scope.eventObj === undefined){
@@ -151,12 +161,21 @@ app.controller("EventAddTaskCtrl",
                 $scope.go("event-list");
             }
         }
-        
-        // $ionicGesture.on('hold', function(event){
-        //     var path = event.path;
-        //     for (var i = 0; i < path.length; i++){
-        //         console.log(path[i]);
-        //     }
-        //     console.log(event.srcElement);
-        // }, angular.element(".task-calendar"));
+
+        $ionicGesture.on('hold', function(event){
+            var path = event.path;
+            for (var i = 0; i < path.length; i++){
+                var classList = path[i].classList;
+                if (classList !== undefined && classList.contains("cell")){
+                    var cellElem = path[i];
+                    break;
+                }
+            }
+            if (cellElem === undefined){
+                return;
+            }
+            var date = cellElem.dataset.date;
+            var timeSlot = cellElem.dataset.timeslot;
+            $scope.cellSelected(date, timeSlot);
+        }, angular.element(document.querySelector(".task-calendar")));
 }]);
