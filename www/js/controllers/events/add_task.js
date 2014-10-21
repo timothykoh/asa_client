@@ -112,6 +112,10 @@ app.controller("EventAddTaskCtrl",
         };
 
         $scope.cellClicked = function(date,timeSlot){
+            if ($scope.cellHold){
+                $scope.cellHold = false;
+                return;
+            }
             var oldVal = $scope.timeSlotMap[date][timeSlot];
             if (oldVal === undefined){
                 oldVal = 0;
@@ -162,20 +166,27 @@ app.controller("EventAddTaskCtrl",
             }
         }
 
-        $ionicGesture.on('hold', function(event){
-            var path = event.path;
-            for (var i = 0; i < path.length; i++){
-                var classList = path[i].classList;
-                if (classList !== undefined && classList.contains("cell")){
-                    var cellElem = path[i];
-                    break;
-                }
+        $ionicGesture.on('hold', function(e){
+            var elem = e.target;
+            var parent = elem.parentNode;
+            if (elem.classList.contains("cell")){
+                var cellElem = elem;
+            } else if (parent.classList.contains("cell")){
+                cellElem = parent;
             }
+
             if (cellElem === undefined){
                 return;
             }
             var date = cellElem.dataset.date;
             var timeSlot = cellElem.dataset.timeslot;
+
+            // cellHold used to prevent click event from firing as well
+            $scope.cellHold = true;
+            setTimeout(function(){
+                $scope.cellHold = false;
+            }, 500);
+
             $scope.cellSelected(date, timeSlot);
         }, angular.element(document.querySelector(".task-calendar")));
 }]);
