@@ -89,6 +89,7 @@ app.controller("EventCtrl",
 
         if ($scope.eventObj !== undefined){
             updateEventDetails($scope.eventObj);
+            $location.search("id", $scope.eventObj.event_id);
         } else{
             var eventId = $location.search().id;
             if (eventId === undefined){
@@ -217,6 +218,7 @@ app.controller("EventCtrl",
             EventService.updateUserAttendance($scope.event_id, isGoing)
             .then(function(){
                 $scope.$apply(function(){
+                    // hide buttons before updating to hide intermediate state
                     $scope.showButtons = false;
                     $scope.isGoing = isGoing;
                     if ($scope.isGoing){
@@ -230,7 +232,6 @@ app.controller("EventCtrl",
                 $scope.$apply(function(){
                     $scope.showButtons = true;
                 });
-                
             }, function(){
                 $ionicPopup.alert({
                     title: "<span class='red-text'>Failed to update attendance.</span>",

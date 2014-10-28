@@ -81,10 +81,11 @@ app.controller("TaskCtrl",
             }
             $scope.dateTaskObjArr = groupedDateTaskObjArr;
         }
-
+        
         var taskObj = TaskService.getCurrentTask();
         if (taskObj !== undefined){
             updateTask(taskObj);
+            $location.search("tid", taskObj.taskId);
         } else{
             var taskId = $location.search().tid;
             if (taskId === undefined){
