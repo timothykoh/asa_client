@@ -76,6 +76,7 @@ app.controller("EventCtrl",
                                 } else{
                                     $scope.attendanceState = "Not Going";
                                 }
+                                $scope.showButtons = true;
                             });
                         }, function(err){
                             console.error(err);
@@ -216,6 +217,7 @@ app.controller("EventCtrl",
             EventService.updateUserAttendance($scope.event_id, isGoing)
             .then(function(){
                 $scope.$apply(function(){
+                    $scope.showButtons = false;
                     $scope.isGoing = isGoing;
                     if ($scope.isGoing){
                         $scope.attendanceState = "Going";
@@ -225,6 +227,10 @@ app.controller("EventCtrl",
                         removeSelfFromGoingArr($scope.goingArr);
                     }
                 });
+                $scope.$apply(function(){
+                    $scope.showButtons = true;
+                });
+                
             }, function(){
                 $ionicPopup.alert({
                     title: "<span class='red-text'>Failed to update attendance.</span>",

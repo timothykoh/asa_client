@@ -8,10 +8,12 @@
             <div class="overlay">
                 <h2>{{name}}</h2>
                 <h3>{{date}}</h3>
-                <h3>{{location}}</h3>
-                <button ng-show="isLoggedIn && isGoing === undefined" class="button button-outline event-outline-btn" ng-click="updateUserAttendance(true)">Going</button>
-                <button ng-show="isLoggedIn && isGoing === undefined" class="button button-outline event-outline-btn" ng-click="updateUserAttendance(false)">Not Going</button>
-                <button ng-show="isLoggedIn && isGoing !== undefined" class="button button-outline event-outline-btn attendance-menu-btn icon-right ion-navicon" ng-click="openAttendanceMenu()">{{attendanceState}}<i class="button-separator"></i></button>
+                <h3 class="btm-text">{{location}}</h3>
+                <div ng-if="showButtons === true">
+                    <button ng-show="isLoggedIn && isGoing === undefined" class="button button-outline event-outline-btn" ng-click="updateUserAttendance(true)">Going</button>
+                    <button ng-show="isLoggedIn && isGoing === undefined" class="button button-outline event-outline-btn" ng-click="updateUserAttendance(false)">Not Going</button>
+                    <button ng-show="isLoggedIn && isGoing !== undefined" class="button button-outline event-outline-btn attendance-menu-btn icon-right ion-navicon" ng-click="openAttendanceMenu()">{{attendanceState}}<i class="button-separator"></i></button>
+                </div>
             </div>
         </div>
         <div class="card" ng-show="goingArr.length > 0" ng-click="showAttendanceListPopup()">

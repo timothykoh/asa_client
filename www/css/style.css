@@ -101,6 +101,9 @@ input[type=date].pseudo-placeholder:hover::before{
         font-size: 19px;
         line-height: 10px;
     }
+    .event-key-details .overlay h3.btm-text{
+        margin-bottom: 20px;
+    }
 .loading-icon{
     font-size: 40px;
 }
@@ -299,7 +302,6 @@ input[type=date].pseudo-placeholder:hover::before{
     min-height: 40px;
     height: 40px;
     line-height: 40px;
-    margin-top: 10px;
     font-size: 14px;
 }
 
